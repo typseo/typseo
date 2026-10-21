@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { betaVersion, isExpectedBetaManifest } from './release-policy.mjs';
+import { isExpectedBetaManifest } from './release-policy.mjs';
 
 const root = new URL('../packages/', import.meta.url);
 const packages = readdirSync(root, { withFileTypes: true }).filter((entry) =>
@@ -17,7 +17,7 @@ for (const entry of packages) {
   names.add(manifest.name);
   if (!isExpectedBetaManifest(manifest))
     failures.push(
-      `${manifest.name}: expected public ${betaVersion} on beta tag`,
+      `${manifest.name}: expected a public x.y.z-beta.N version on beta tag`,
     );
   const builtExports = {
     '@typseo/core': ['.'],

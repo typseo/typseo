@@ -1,8 +1,6 @@
-export const betaVersion = '0.1.0-beta.0';
-
 export function isExpectedBetaManifest(manifest) {
   return (
-    manifest.version === betaVersion &&
+    /^\d+\.\d+\.\d+-beta\.\d+$/.test(manifest.version ?? '') &&
     manifest.private !== true &&
     manifest.publishConfig?.access === 'public' &&
     manifest.publishConfig?.tag === 'beta'

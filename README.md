@@ -16,7 +16,7 @@ pnpm dev
 
 Open <http://localhost:3000>. The playground combines the Tiptap editor with live SEO analysis from `@typseo/core`. Drafts are saved to this browser's local storage; there is no account or backend. See the [playground guide](docs/playground.md) for controls, export, and limitations.
 
-Run `pnpm dev:docs` to open the documentation site at <http://localhost:3001>. Three standalone integrations live in [`examples/`](examples/README.md): Next.js App Router, Next.js Pages Router, and React/Vite. Each has its own run command and uses workspace packages; packages are not yet published to a registry.
+Run `pnpm dev:docs` to open the documentation site at <http://localhost:3001>. Three standalone integrations live in [`examples/`](examples/README.md): Next.js App Router, Next.js Pages Router, and React/Vite. Each has its own run command and uses workspace packages. All seven libraries are also available as `0.1.0-beta.0` under the [`@typseo` npm scope](https://www.npmjs.com/org/typseo).
 
 ## Checks
 
@@ -35,6 +35,6 @@ The pre-commit hook also checks staged paths and content. Run `git config core.h
 
 See the [documentation site](apps/docs/README.md), [runnable examples](examples/README.md), [SEO Core API](docs/seo-core.md), [Editor & React SDK API](docs/editor-react.md), [SEO UI & Next.js helpers](docs/seo-ui-next.md), [AI integration](docs/ai-integration.md), [external integrations](docs/external-integrations.md), [playground guide](docs/playground.md), [architecture](docs/architecture.md), [milestones](docs/milestones.md), and [contributing guide](CONTRIBUTING.md).
 
-Release preparation is tracked in the [public beta checklist](docs/release-preparation.md). `pnpm release:check` verifies prospective package contents without publishing them.
+The [beta release guide](docs/release-preparation.md) covers version PRs, automated staging, and maintainer approval. `pnpm release:check` verifies prospective package contents without publishing them.
 
 The project uses the [MIT License](LICENSE). Package publication remains deferred until M7 and project-owner approval.

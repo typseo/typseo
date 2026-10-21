@@ -41,3 +41,4 @@ LOCAL_ONLY_DO_NOT_COMMIT/
 **/.cursor/
 **/.aider*
 **/LOCAL_ONLY_DO_NOT_COMMIT/
+release-tarballs/

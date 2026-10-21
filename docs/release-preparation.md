@@ -1,28 +1,35 @@
-# Public beta release preparation
+# Public beta releases
 
-This is a preparation checklist, not authorization to publish. The owner controls the `@typseo` npm organization and approved preparing all seven packages as `0.1.0-beta.0`. Their manifests are publishable with public access and the `beta` dist-tag, but no npm release workflow is enabled and no package has been published. Do not run a publish command from this branch without a separate release review.
+All seven `@typseo/*` packages were published to npm as `0.1.0-beta.0` on 2026-10-21. The initial release was published interactively by the `neongodev` npm organization owner. The registry currently points both `beta` and `latest` to that first beta; npm rejected an attempt to remove `latest` (HTTP 400). Treat the packages as prereleases and pin exact versions in consumers.
 
-## Current automated gate
+## Release flow
 
-Run `pnpm install --frozen-lockfile` and `pnpm release:check` from the repository root. The command builds the workspace and uses `npm pack --dry-run --json --ignore-scripts` for each package. It verifies that the README, MIT license text, package manifest, and every declared JS/type export are actually in the prospective tarball; it rejects agent-control and environment files. A second check uses `pnpm pack` to create local tarballs, verifies that packed dependency ranges no longer contain `workspace:`, installs all seven tarballs into a temporary consumer outside the workspace, and imports every public entrypoint. CI runs both checks after its production build. Neither check sends content to npm, and the temporary consumer and tarballs are removed afterward.
+1. Add a Changeset to a PR that changes a public package: `pnpm changeset`. Choose the affected packages and a semver bump. Non-package changes do not need a Changeset.
+2. After that PR merges into `main`, [Prepare npm release PR](../.github/workflows/release-version.yml) runs `pnpm release:version`, updates package versions and changelogs, and opens/updates a version PR. The workflow explicitly dispatches CI for that PR because a PR created with `GITHUB_TOKEN` does not trigger `pull_request` workflows on its own.
+3. Review the version PR, its CI result, and the changelogs. Merge only when the release contents are correct. A merge that changes `packages/*/package.json` triggers [Stage npm beta release](../.github/workflows/release-stage.yml).
+4. The release workflow runs security, boundaries, formatting, typecheck, lint, tests, a production build, tarball inspection, and a packed-consumer smoke test. A verification job uploads the tarballs. A separate job with OIDC permission stages only versions absent from the public registry, in dependency order. Staging does **not** make a new version installable.
+5. On npmjs.com, inspect each staged tarball and approve it with 2FA. Approve internal dependencies before dependents (`core`, `ai`, `react` before `next` and `ui`). npm's publish-time malware scan may delay public availability. Verify every version, the `beta` dist-tag, and a clean install from the registry before announcing a release.
 
-The packages have explicit ESM exports and declaration paths. `@typseo/ahrefs` and `@typseo/gsc` export only `./server`. The CI boundary and artifact scripts require the same beta version, public access and `beta` dist-tag for all seven packages and continue to enforce the public export paths.
+The version PR and npm approvals are deliberate human gates. Pushing a source change or merely merging a feature PR does not publish it. The workflow does not store an npm write token or use one to bypass 2FA.
 
-## Owner decisions and manual setup
+## One-time trusted publisher setup
 
-1. Confirm npm CLI access as the `neongodev` owner and verify all seven package names are still absent from the registry. The browser login does not authenticate the CLI.
-2. Review the Changesets-generated `0.1.0-beta.0` versions and changelogs, and verify workspace dependency ranges in packed manifests. Publish core dependencies before dependents, or use a release tool with proven ordering. Use `--tag beta` explicitly and confirm the registry does not put this prerelease on `latest`.
-3. The first publication must be authenticated interactively because trusted publishers are configured from an existing package's settings. After the initial packages exist, configure an [npm trusted publisher](https://docs.npmjs.com/trusted-publishers/) for the exact GitHub repository and release workflow. Use a protected GitHub environment with required reviewers; avoid a long-lived npm publish token. npm's current trusted-publisher requirements include Node 22.14+ and npm CLI 11.5.1+.
-4. Review `pnpm audit --prod`, the full development dependency audit, license text, package contents, CI logs, and real example installs from tarballs. Do not treat a green application build as proof that packed packages install correctly.
-5. Only then add and review a manual, environment-gated publishing workflow. Verify the npm registry artifacts and provenance, install them in fresh consumer projects, and announce the exact compatibility/support status. Never automatically publish on a push to `main`.
+Once the workflow is merged into `main`, configure a trusted publisher on **each** of the seven npm packages. Use the exact GitHub organization `typseo`, repository `typseo`, and workflow filename `release-stage.yml`. Leave the environment name empty because the workflow does not declare a GitHub environment. Allow **stage publish only**; do not enable direct `npm publish` or dist-tag management. [npm's trusted publisher guide](https://docs.npmjs.com/trusted-publishers/) documents the same fields and OIDC requirement.
 
-## Findings on 2026-10-21
+With npm CLI 11.21.0 or newer, an owner can do the equivalent from a logged-in terminal:
 
-- After the Changesets 3 and Vite 8 upgrades, `pnpm audit --prod` reports no known vulnerabilities. The full audit reports one high-severity `braces` advisory through the development-only `eslint-config-next` → `@next/eslint-plugin-next` → `fast-glob` → `micromatch` path; the audit lists no patched version. Recheck before release and avoid untrusted glob patterns in development tooling.
-- `pnpm release:check` passes for all seven packages on a frozen install. The packed-consumer smoke test verifies local installation and module imports; full consumer build and type-compatibility tests remain separate release gates.
-- The React/Vite example builds with Vite 8, but its main JavaScript chunk is about 627 kB minified (197 kB gzip). Rolldown warns that React Server Component `use client` directives may not be preserved when bundling; those directives have no client-side meaning in Vite. Measure the consumer bundle and typing latency before claiming performance targets.
-- The latest GitHub Actions run passed and emitted an `ubuntu-latest` image migration notice. Recheck the runner image and release workflow compatibility before publishing.
+```bash
+npm trust github @typseo/core --repo typseo/typseo --file release-stage.yml --allow-stage-publish
+```
 
-## If a beta must be withdrawn
+Repeat for `ai`, `ahrefs`, `gsc`, `react`, `next`, and `ui`. npm requests 2FA for the first trust change and can offer a short approval window for the remaining packages. Do not send OTPs or npm tokens to CI. Once trusted publishing has been validated, consider requiring 2FA and disallowing traditional tokens in each package's publishing settings.
 
-npm versions cannot be silently replaced. Stop the workflow, deprecate the affected version with a precise reason, fix forward with a new version, and publish a security advisory when appropriate. Do not assume a git revert removes already published tarballs.
+**Timing:** npm expires an unvalidated trusted-publisher configuration if it does not complete its first successful publish within two days. Configure trust shortly before the next actual beta release is ready to stage; do not set it up weeks early. Until then, the release workflow is prepared but cannot stage a new version. No release is created solely to validate trust.
+
+GitHub repository Actions settings must allow Actions to create pull requests for the automatic version PR. The version workflow needs `contents: write`, `pull-requests: write`, and `actions: write` to open the PR and dispatch its CI; the staging job alone gets `id-token: write`.
+
+## Local checks and recovery
+
+Run `pnpm install --frozen-lockfile` and `pnpm release:check` from the root before reviewing a version PR. The latter builds the workspace, inspects every prospective tarball for README, license, exports, and prohibited files, then installs all packed packages into a temporary consumer and imports every public entrypoint. CI performs the same checks. The release checks accept future `x.y.z-beta.N` versions and verify exact internal dependency versions after `pnpm pack` rewrites `workspace:*` ranges.
+
+If staging fails after some packages were staged, inspect the npm Staged Packages queue before rerunning the workflow; a staged version reserves its version number. If a public beta is defective, do not try to overwrite its version. Deprecate it with a precise reason, fix forward with a new version, and publish a security advisory when appropriate.

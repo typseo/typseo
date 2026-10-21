@@ -1,0 +1,68 @@
+name: Stage npm beta release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/*/package.json'
+
+concurrency:
+  group: release-stage-main
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  verify:
+    if: github.repository == 'typseo/typseo' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.4.1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm security:tracked
+      - run: pnpm security:history
+      - run: pnpm boundaries
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm release:check
+      - run: node scripts/pack-release.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-npm-tarballs
+          path: release-tarballs/*.tgz
+          if-no-files-found: error
+          retention-days: 1
+
+  stage:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-npm-tarballs
+          path: release-tarballs
+      - run: npm install --global npm@11.21.0 --ignore-scripts --no-audit --no-fund
+      - run: node scripts/stage-release.mjs

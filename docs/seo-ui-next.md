@@ -1,6 +1,6 @@
 # SEO UI and Next.js helpers (M3)
 
-M3 adds optional, unstyled SEO components in `@typseo/ui/seo`, controlled metadata fields in `@typseo/ui/metadata-editor`, and server-side helpers in `@typseo/next`. The core engine remains independent of React and Next.js. These packages remain private until release approval.
+M3 adds optional, unstyled SEO components in `@typseo/ui/seo`, controlled metadata fields in `@typseo/ui/metadata-editor`, and server-side helpers in `@typseo/next`. The core engine remains independent of React and Next.js. These packages are available as public betas on npm.
 
 ## Reusable SEO UI
 
