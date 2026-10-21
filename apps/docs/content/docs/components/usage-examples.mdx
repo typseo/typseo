@@ -1,0 +1,30 @@
+---
+title: Usage Examples
+description: Compose score, checklist, and snippet preview without a prescribed layout.
+---
+
+```tsx
+import { analyzeSeoDocument } from '@typseo/core';
+import { SEOSidebar } from '@typseo/ui/seo';
+
+const snapshot = {
+  title: 'A clear page title',
+  metaDescription: 'A useful summary of the page.',
+  bodyText: 'A clear page title\nThe complete visible article text...',
+  headings: [{ level: 1 as const, text: 'A clear page title' }],
+};
+const analysis = analyzeSeoDocument(snapshot);
+
+export function ArticleAnalysis() {
+  return (
+    <SEOSidebar
+      document={snapshot}
+      analysis={analysis}
+      url="https://example.com/article"
+      className="article-analysis"
+    />
+  );
+}
+```
+
+`SEOSidebar` simply composes `SEOScore`, `SEOChecklist`, and `SERPPreview`. It does not fetch or analyze data. You can render those components separately to fit your design system. The [Playground](/docs/examples/playground) shows a full editor-to-analysis workflow.

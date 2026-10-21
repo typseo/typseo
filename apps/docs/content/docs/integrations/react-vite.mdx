@@ -1,0 +1,16 @@
+---
+title: React / Vite
+description: Use the editor and core analysis without Next.js.
+---
+
+The headless hook and SEO engine work in a React application without App Router. The [React/Vite example](/docs/examples/react-vite) contains a runnable host.
+
+```tsx
+import { TypseoEditor } from '@typseo/ui';
+import { analyzeSeoDocument } from '@typseo/core';
+
+// Keep the page title in host state. Adapt editor output to a complete
+// reader-visible snapshot before invoking analyzeSeoDocument.
+```
+
+The host owns storage and rendering. Do not use `@typseo/next` in Vite; write your document title and meta description with your framework's head-management approach.

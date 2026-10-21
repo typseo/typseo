@@ -1,0 +1,24 @@
+---
+title: Google Search Console
+description: Optional server-only Search Analytics adapter with host-owned OAuth.
+---
+
+`@typseo/gsc/server` queries Search Analytics. The host supplies a current OAuth access token for each request and owns consent, token storage, refresh, permission checks, and privacy policy. Use the read-only `webmasters.readonly` scope unless your use case requires more.
+
+```ts
+import { createGscClient } from '@typseo/gsc/server';
+
+const client = createGscClient({
+  getAccessToken: () => getCurrentServerSideOAuthToken(),
+});
+const rows = await client.querySearchAnalytics({
+  siteUrl: 'sc-domain:example.com',
+  startDate: '2026-01-01',
+  endDate: '2026-01-31',
+  dimensions: ['query'],
+  rowLimit: 100,
+  signal: AbortSignal.timeout(10_000),
+});
+```
+
+An empty upstream `rows` response becomes `[]`. This is not a complete export; the host must page, schedule, and cache as needed. `GscApiError` exposes `status` and `retryAfter`; there is no hidden retry. Never proxy this method directly to an unauthenticated browser. It is not enabled in the Playground by default.

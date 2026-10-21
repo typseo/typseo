@@ -1,0 +1,28 @@
+---
+title: Next.js API
+description: Metadata, Article JSON-LD, and safe serialization exported by @typseo/next.
+---
+
+`@typseo/next` exports `createTypseoMetadata`, `createArticleJsonLd`, `serializeJsonLd` and their option/result types.
+
+```ts
+interface TypseoMetadataOptions {
+  document: Pick<SeoDocument, 'title' | 'metaDescription'>;
+  canonicalUrl?: string | URL;
+  imageUrl?: string | URL;
+  siteName?: string;
+  type?: 'article' | 'website';
+}
+interface ArticleSchemaOptions {
+  document: Pick<SeoDocument, 'title' | 'metaDescription'>;
+  url: string | URL;
+  imageUrl?: string | URL;
+  author?: { name: string; url?: string | URL };
+  datePublished?: string;
+  dateModified?: string;
+}
+```
+
+`createTypseoMetadata(options)` returns Next.js `Metadata` with title, optional description/canonical, Open Graph, and Twitter card fields. `createArticleJsonLd(options)` returns an Article object with only supplied optional facts. `serializeJsonLd(value)` returns script-safe JSON by escaping `<` and throws on unserializable input. All supplied URLs must be absolute HTTP(S) URLs.
+
+These are App Router helpers. Pages Router users should map fields with `next/head`. See [Next.js integration](/docs/integrations/nextjs).

@@ -1,0 +1,22 @@
+---
+title: Props
+description: A concise map of the current public component contracts.
+---
+
+These names reflect public exports in `packages/ui/src`. For full TypeScript declarations, inspect the linked source or build the packages locally.
+
+| Component          | Required props                                        | Optional props                                                                                                                      |
+| ------------------ | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `TypseoEditor`     | none                                                  | `value`, `defaultValue`, `onChange`, `extensions`, `starterKit`, `editable`, `editorProps`, `ariaLabel`, `showToolbar`, class names |
+| `EditorToolbar`    | `editor: Editor or null`                              | `className`                                                                                                                         |
+| `SEOScore`         | `analysis: SeoAnalysis`                               | `label`, `className`                                                                                                                |
+| `SEOChecklist`     | `analysis: SeoAnalysis`                               | `onSelectIssue(check)`, `className`                                                                                                 |
+| `SERPPreview`      | `document`, `url`                                     | `className`                                                                                                                         |
+| `SEOSidebar`       | `analysis`, `document`, `url`                         | `onSelectIssue(check)`, `className`                                                                                                 |
+| `MetadataEditor`   | `value`, `onChange(next)`                             | `disabled`, `className`                                                                                                             |
+| `KeywordInput`     | `value`, `onChange(value)`                            | `id`, `disabled`, `className`                                                                                                       |
+| `AICommandMenu`    | `value`, `onChange(command)`                          | `disabled`, `className`                                                                                                             |
+| `AIChatPanel`      | `value`, `onChange(value)`, `onSubmit()`              | `disabled`, `busy`, `className`                                                                                                     |
+| `AIChangesPreview` | `original`, `replacement`, `onAccept()`, `onReject()` | `disabled`, `className`                                                                                                             |
+
+See the [UI API](/docs/api-reference/ui) for import paths and behavior.

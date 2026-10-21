@@ -1,0 +1,16 @@
+---
+title: Playground
+description: Explore Typseo in a local, interactive Next.js development host.
+---
+
+```bash
+pnpm dev
+```
+
+Open [localhost:3000](http://localhost:3000). The Playground has document navigation, a Tiptap editor, SEO analysis, outline, readability counts, and an illustrative SERP preview. Below 900 px, navigation becomes a drawer and Editor/Analysis use a bottom switch. The theme toggle is remembered locally.
+
+Drafts persist in this browser's local storage only; there is no account or cross-device sync. You can create, search, switch, preview, and export documents. The sample article uses the same `analyzeSeoDocument` rules as new documents. SEO analysis is scheduled after a short typing pause, not on every transaction.
+
+Select text to try the AI review UI. The provider route is disabled by default. To enable the **local development demo** deliberately, supply server-only `TYPSEO_AI_DEMO_ENABLED`, `TYPSEO_AI_API_KEY`, and `TYPSEO_AI_MODEL` (plus optional `TYPSEO_AI_ENDPOINT`). This is not production auth or quota infrastructure.
+
+The `/seo-example` route demonstrates Next.js metadata and reusable SEO UI. See [docs/playground.md](https://github.com/typseo/typseo/blob/main/docs/playground.md) for the complete workflow and [source](https://github.com/typseo/typseo/tree/main/apps/playground).

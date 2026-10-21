@@ -1,0 +1,10 @@
+---
+title: AI Integration
+description: Opt-in, server-side text suggestions with explicit human review.
+---
+
+`@typseo/ai` validates bounded edit requests and defines a provider-agnostic contract. `@typseo/ai/server` supplies an HTTPS OpenAI-compatible chat-completions adapter. The client UI components are controlled and unstyled; the host owns generation, loading, errors, and applying edits.
+
+The Playground demo is **disabled by default**. It responds with 503 until a developer explicitly configures it locally. A production host must add authentication, authorization, quotas, abuse protection, and privacy disclosures.
+
+Read [Providers](/docs/ai-integration/providers), [Suggestions](/docs/ai-integration/suggestions), and [Human Review](/docs/ai-integration/human-review).

@@ -1,0 +1,16 @@
+---
+title: SEO Score
+description: How applicable rule weights become a 0–100 editorial score.
+---
+
+Each `SeoCheck` has a weight and `pass`, `fail`, or `skip` status. The score is the rounded percentage of **applicable** weight earned. Skipped checks do not count toward the denominator. The analysis also exposes `earnedWeight`, `applicableWeight`, `checks`, and `issues`.
+
+```tsx
+import { SEOScore } from '@typseo/ui/seo';
+
+<SEOScore analysis={analysis} label="Article SEO score" />;
+```
+
+`SEOScore` uses the accessible `meter` role with a 0–100 range and `data-score`. It does not run the engine. The built-in rules check title and description lengths, body length, heading structure, image alt text, and an optional focus keyword.
+
+This is a checklist heuristic, not a Google ranking factor or a promise about SERP placement. CJK token counts may need a custom rule set because the default tokenizer is not language-specific.

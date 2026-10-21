@@ -1,0 +1,19 @@
+---
+title: Editor
+description: A headless Tiptap v3 hook and optional unstyled editor shell.
+---
+
+`@typseo/react` adapts Tiptap v3 to React. `@typseo/ui` adds an editor shell and toolbar without prescribing a visual theme. Both run on the client; neither saves documents, fetches data, or runs SEO analysis as you type.
+
+Start with [Tiptap Editor](/docs/editor/tiptap-editor) for the ready-to-compose component, or [React Hooks](/docs/editor/react-hooks) for a custom interface.
+
+## Choose the right surface
+
+| Need                        | Use                                    |
+| --------------------------- | -------------------------------------- |
+| An accessible editor shell  | `TypseoEditor` from `@typseo/ui`       |
+| Custom content and controls | `useTypseoEditor` from `@typseo/react` |
+| Only formatting controls    | `EditorToolbar` from `@typseo/ui`      |
+| Extra Tiptap behavior       | The hook's `extensions` option         |
+
+See [Customization](/docs/editor/customization) for host CSS and controlled-state considerations.

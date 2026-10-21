@@ -1,0 +1,43 @@
+---
+title: Next.js
+description: App Router metadata and Article JSON-LD without coupling core to Next.js.
+---
+
+`@typseo/next` builds App Router `Metadata` from persisted page fields. Optional canonical and image URLs must be absolute HTTP(S) URLs; invalid values throw rather than emitting unsafe links.
+
+```tsx
+import {
+  createArticleJsonLd,
+  createTypseoMetadata,
+  serializeJsonLd,
+} from '@typseo/next';
+
+const article = {
+  title: 'A useful article',
+  metaDescription: 'A concise summary for readers.',
+};
+const url = 'https://example.com/article';
+
+export const metadata = createTypseoMetadata({
+  document: article,
+  canonicalUrl: url,
+  type: 'article',
+});
+
+export default function Page() {
+  const schema = createArticleJsonLd({ document: article, url });
+  return (
+    <article>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
+      />
+      <h1>{article.title}</h1>
+    </article>
+  );
+}
+```
+
+`serializeJsonLd` escapes `<` before script insertion. Supply only real author, date, image, and canonical fields; the helper does not fabricate them. The editor stays in a separate client component. Browser-local drafts alone cannot provide server-rendered metadata.
+
+For Pages Router, use `next/head` and map title/description explicitly. The current `@typseo/next` helper targets App Router; see the [Pages Router example](/docs/examples/pages-router).

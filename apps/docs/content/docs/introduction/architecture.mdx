@@ -1,0 +1,26 @@
+---
+title: Architecture
+description: Package ownership, dependency direction, and server boundaries.
+---
+
+The package boundary is intentional: `@typseo/core` imports no React, Tiptap, Next.js, provider SDK or network client. The editor hook and UI depend on core only where needed. Next.js, AI, Ahrefs and GSC remain optional.
+
+```text
+@typseo/core        SEO snapshot → rules → analysis
+     ↑
+@typseo/react       client-side Tiptap hook
+     ↑
+@typseo/ui          optional editor and SEO presentation
+
+@typseo/next        server metadata + JSON-LD
+@typseo/ai/server   optional AI provider adapter
+@typseo/ahrefs/server and @typseo/gsc/server  optional data adapters
+```
+
+## Runtime boundaries
+
+The editor initializes only on the client to avoid SSR mismatches and avoids React rerenders for every transaction. Hosts should debounce parent-side analysis. The `@typseo/ui` components have no bundled theme; host styles define their appearance. Server-only provider credentials must never enter the browser import graph.
+
+The Playground is a development host, not the SDK. Its local-storage drafts, theme, and document navigation do not imply Typseo provides persistence. Its `/seo-example` route demonstrates App Router metadata and SEO UI. The standalone examples cover App Router, Pages Router, and Vite.
+
+For the full architecture record and milestone notes, see [docs/architecture.md](https://github.com/typseo/typseo/blob/main/docs/architecture.md) and [docs/milestones.md](https://github.com/typseo/typseo/blob/main/docs/milestones.md). The latter is planning history, not a published roadmap promise.

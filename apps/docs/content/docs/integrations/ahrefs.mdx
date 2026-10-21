@@ -1,0 +1,21 @@
+---
+title: Ahrefs
+description: Optional server-only BYOK adapter for keyword overview metrics.
+---
+
+`@typseo/ahrefs/server` calls the Ahrefs API v3 Keywords Explorer Overview endpoint. It requests only keyword, volume, and difficulty for 1–10 keywords and one two-letter country. Metrics may be absent or null.
+
+```ts
+import { createAhrefsClient } from '@typseo/ahrefs/server';
+
+const client = createAhrefsClient({ apiKey: getServerSecret() });
+const rows = await client.keywordOverview({
+  keywords: ['seo toolkit'],
+  country: 'US',
+  signal: AbortSignal.timeout(10_000),
+});
+```
+
+Requests may consume API units. Require an authenticated user action, budget, rate limits, and appropriate caching. The adapter does not retry automatically; `AhrefsApiError` exposes `status` and `retryAfter` without the credential. It is not enabled in the Playground by default and does not store keys for you.
+
+See the [server adapter source](https://github.com/typseo/typseo/blob/main/packages/ahrefs/src/server.ts) and [original integration notes](https://github.com/typseo/typseo/blob/main/docs/external-integrations.md).

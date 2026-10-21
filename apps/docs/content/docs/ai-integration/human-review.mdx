@@ -1,0 +1,14 @@
+---
+title: Human Review
+description: Accept or reject a proposal only while the original selection is still valid.
+---
+
+`AIChangesPreview` displays original and suggested text and provides explicit Accept and Reject controls. The host decides how to apply a suggestion and must check that the active document and selected passage have not changed since the request.
+
+The Playground replaces the selected range only after that check and inserts **plain text**, not model-generated HTML. Rejecting leaves the document untouched. AI output may be inaccurate or omit facts; the writer remains responsible for review.
+
+<Callout type="warning" title="Privacy and cost">
+  Enabling a provider sends selected text and optional context to that provider.
+  Inform users, require an intentional action, and enforce your own budget and
+  access controls.
+</Callout>

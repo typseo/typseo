@@ -1,0 +1,17 @@
+---
+title: Extensions
+description: Add Tiptap extensions without changing Typseo package APIs.
+---
+
+StarterKit supplies the default editing schema and common commands. Pass a stable `extensions` array to `useTypseoEditor` or `TypseoEditor` to add behavior.
+
+```tsx
+import Placeholder from '@tiptap/extension-placeholder';
+
+const extensions = [Placeholder.configure({ placeholder: 'Write here…' })];
+const editor = useTypseoEditor({ extensions });
+```
+
+The placeholder extension is an example: install it in your host application if you use it. It is not included by Typseo. Configure default nodes and marks through StarterKit. If extension identities change after mount, Tiptap may recreate the editor; keep them stable while editing.
+
+Set `starterKit: false` only if your replacement extension set defines a complete schema.

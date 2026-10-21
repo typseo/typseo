@@ -1,0 +1,4 @@
+{
+  "title": "Examples",
+  "pages": ["index", "playground", "app-router", "pages-router", "react-vite"]
+}

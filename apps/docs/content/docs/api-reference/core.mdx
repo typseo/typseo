@@ -1,0 +1,47 @@
+---
+title: Core API
+description: The exact document, rule, analysis, and issue surface exported by @typseo/core.
+---
+
+## Functions
+
+`analyzeSeoDocument(document: SeoDocument, rules?: readonly SeoRule[]): SeoAnalysis` evaluates a snapshot synchronously. `defaultSeoRules` is the built-in rule collection; supplying a second argument replaces it rather than appending to it.
+
+## Types
+
+```ts
+interface SeoDocument {
+  title: string;
+  metaDescription?: string;
+  bodyText: string;
+  headings?: readonly SeoHeading[];
+  images?: readonly SeoImage[];
+  focusKeyword?: string;
+}
+interface SeoHeading {
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  text: string;
+}
+interface SeoImage {
+  alt?: string;
+  decorative?: boolean;
+}
+interface SeoRule {
+  id: string;
+  weight: number;
+  evaluate(document: SeoDocument): SeoRuleResult;
+}
+type SeoRuleResult =
+  { status: 'pass' } | { status: 'skip' } | { status: 'fail'; issue: SeoIssue };
+interface SeoAnalysis {
+  score: number;
+  earnedWeight: number;
+  applicableWeight: number;
+  checks: readonly SeoCheck[];
+  issues: readonly SeoIssue[];
+}
+```
+
+`SeoCheck` includes `id`, `weight`, `status`, and optional `issue`. `SeoIssue` includes `code`, `severity` (`error` or `warning`), `field`, and `message`. Built-in issue codes cover missing/length title and description, short body, H1 count, skipped heading levels, missing image alt, and absent focus keyword in title/body. Custom rules may use their own string codes.
+
+The complete definitions are in [`packages/core/src/types.ts`](https://github.com/typseo/typseo/blob/main/packages/core/src/types.ts). See [SEO Engine](/docs/seo-toolkit/seo-engine) for the snapshot contract.
