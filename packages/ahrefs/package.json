@@ -2,7 +2,21 @@
   "name": "@typseo/ahrefs",
   "version": "0.0.0",
   "private": true,
-  "exports": {},
-  "description": "Optional Ahrefs adapter, planned for M5",
-  "sideEffects": false
+  "type": "module",
+  "description": "Optional server-side Ahrefs keyword adapter",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noUnusedLocals --noUnusedParameters"
+  }
 }
