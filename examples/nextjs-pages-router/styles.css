@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #fafbf7;
+  color: #203025;
+  font-family: Arial, sans-serif;
+}
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 70px 26px;
+}
+.overline {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: #66856c;
+}
+h1 {
+  font:
+    normal clamp(40px, 5vw, 66px)/1.05 Georgia,
+    serif;
+  letter-spacing: -0.05em;
+  max-width: 800px;
+  margin: 19px 0;
+}
+main > p {
+  line-height: 1.6;
+  color: #68756a;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  gap: 24px;
+  margin: 45px 0;
+}
+h2 {
+  font:
+    normal 27px Georgia,
+    serif;
+}
+.editor {
+  background: white;
+  border: 1px solid #d7e1d4;
+  min-height: 280px;
+}
+.editor [role='toolbar'] {
+  padding: 12px;
+  border-bottom: 1px solid #d7e1d4;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.editor button {
+  background: #f1f5ed;
+  border: 1px solid #d7e1d4;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+.editor button[aria-pressed='true'] {
+  background: #cfdfc4;
+}
+.editor .tiptap {
+  padding: 16px;
+  min-height: 210px;
+  outline-offset: 3px;
+}
+aside {
+  background: #eaf1e5;
+  padding: 24px;
+}
+.score {
+  font:
+    normal 68px Georgia,
+    serif;
+  display: block;
+  margin: 17px 0;
+}
+.score small {
+  font:
+    18px Arial,
+    sans-serif;
+  color: #79927b;
+}
+aside ul {
+  padding-left: 18px;
+  line-height: 1.6;
+  font-size: 13px;
+}
+.hint {
+  font-size: 12px;
+  color: #758276;
+  line-height: 1.6;
+}
+@media (max-width: 700px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  main {
+    padding-top: 42px;
+  }
+}

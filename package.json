@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "turbo dev --filter=@typseo/playground",
+    "dev:docs": "turbo dev --filter=@typseo/docs",
     "build": "turbo build",
     "typecheck": "turbo typecheck",
     "lint": "turbo lint",
