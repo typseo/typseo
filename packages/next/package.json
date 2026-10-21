@@ -2,7 +2,31 @@
   "name": "@typseo/next",
   "version": "0.0.0",
   "private": true,
-  "exports": {},
-  "description": "Next.js helpers, planned for M3",
-  "sideEffects": false
+  "type": "module",
+  "description": "Next.js metadata and structured-data helpers for Typseo",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noUnusedLocals --noUnusedParameters"
+  },
+  "dependencies": {
+    "@typseo/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "next": ">=16.0.0"
+  },
+  "devDependencies": {
+    "next": "16.4.2"
+  }
 }

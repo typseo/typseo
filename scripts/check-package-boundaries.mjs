@@ -18,16 +18,27 @@ for (const entry of packages) {
     failures.push(
       `${manifest.name}: package must remain private before release`,
     );
-  if (['@typseo/core', '@typseo/react', '@typseo/ui'].includes(manifest.name)) {
-    const rootExport = manifest.exports?.['.'];
+  const builtExports = {
+    '@typseo/core': ['.'],
+    '@typseo/react': ['.'],
+    '@typseo/ui': ['.', './seo', './metadata-editor'],
+    '@typseo/next': ['.'],
+  }[manifest.name];
+  if (builtExports) {
+    const actual = Object.keys(manifest.exports ?? {}).sort();
+    const expected = [...builtExports].sort();
     if (
-      Object.keys(manifest.exports ?? {}).length !== 1 ||
-      rootExport?.types !== './dist/index.d.ts' ||
-      rootExport?.default !== './dist/index.js'
+      actual.join(',') !== expected.join(',') ||
+      expected.some((key) => {
+        const stem = key === '.' ? 'index' : key.slice(2);
+        const entry = manifest.exports?.[key];
+        return (
+          entry?.types !== `./dist/${stem}.d.ts` ||
+          entry?.default !== `./dist/${stem}.js`
+        );
+      })
     ) {
-      failures.push(
-        `${manifest.name}: must expose only its built public entry point`,
-      );
+      failures.push(`${manifest.name}: unexpected public exports`);
     }
   } else if (
     !manifest.exports ||
@@ -44,6 +55,21 @@ for (const entry of packages) {
       )
     ) {
       failures.push('core must remain framework independent');
+    }
+  }
+  if (manifest.name === '@typseo/next') {
+    const deps = { ...manifest.dependencies, ...manifest.peerDependencies };
+    if (
+      Object.keys(deps).some(
+        (name) =>
+          name === 'react' ||
+          name === 'react-dom' ||
+          name.startsWith('@tiptap/') ||
+          name === '@typseo/ui' ||
+          name === '@typseo/react',
+      )
+    ) {
+      failures.push('next helpers must not depend on React, Tiptap, or UI');
     }
   }
   if (entry.name !== manifest.name.replace('@typseo/', ''))
