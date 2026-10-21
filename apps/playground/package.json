@@ -15,6 +15,7 @@
     "@tiptap/react": "3.32.0",
     "@tiptap/starter-kit": "3.32.0",
     "@typseo/core": "workspace:*",
+    "@typseo/ai": "workspace:*",
     "@typseo/next": "workspace:*",
     "@typseo/react": "workspace:*",
     "@typseo/ui": "workspace:*",

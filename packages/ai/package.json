@@ -2,7 +2,26 @@
   "name": "@typseo/ai",
   "version": "0.0.0",
   "private": true,
-  "exports": {},
-  "description": "AI integration, planned for M4",
-  "sideEffects": false
+  "type": "module",
+  "description": "Optional server-side AI editing contracts and provider adapter",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noUnusedLocals --noUnusedParameters"
+  }
 }

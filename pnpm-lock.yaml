@@ -41,6 +41,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: 3.32.0
         version: 3.32.0
+      '@typseo/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@typseo/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -163,6 +166,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: 3.32.0
         version: 3.32.0
+      '@typseo/ai':
+        specifier: workspace:*
+        version: link:../ai
       '@typseo/core':
         specifier: workspace:*
         version: link:../core
