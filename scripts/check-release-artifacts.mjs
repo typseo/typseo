@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { betaVersion, isExpectedBetaManifest } from './release-policy.mjs';
 
 const repositoryRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageRoot = join(repositoryRoot, 'packages');
@@ -23,9 +24,9 @@ for (const directory of packageDirectories) {
   );
   const files = new Set(packed[0]?.files.map((file) => file.path) ?? []);
 
-  if (!manifest.private)
+  if (!isExpectedBetaManifest(manifest))
     failures.push(
-      `${manifest.name}: unexpectedly publishable before owner approval`,
+      `${manifest.name}: expected public ${betaVersion} on beta tag`,
     );
   if (manifest.license !== 'MIT')
     failures.push(`${manifest.name}: missing MIT SPDX license`);

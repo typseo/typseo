@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs';
+import { betaVersion, isExpectedBetaManifest } from './release-policy.mjs';
 
 const root = new URL('../packages/', import.meta.url);
 const packages = readdirSync(root, { withFileTypes: true }).filter((entry) =>
@@ -14,9 +15,9 @@ for (const entry of packages) {
   if (names.has(manifest.name))
     failures.push(`duplicate package name: ${manifest.name}`);
   names.add(manifest.name);
-  if (!manifest.private)
+  if (!isExpectedBetaManifest(manifest))
     failures.push(
-      `${manifest.name}: package must remain private before release`,
+      `${manifest.name}: expected public ${betaVersion} on beta tag`,
     );
   const builtExports = {
     '@typseo/core': ['.'],
