@@ -1,0 +1,87 @@
+:root {
+  color-scheme: dark;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #0b1018;
+  color: #f1f4f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.shell {
+  width: min(760px, calc(100% - 48px));
+  min-height: 100vh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid #4978a5;
+  border-radius: 14px;
+  color: #8dc8ff;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 56px;
+}
+
+.eyebrow {
+  color: #8dc8ff;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+}
+h1 {
+  max-width: 700px;
+  font-size: clamp(42px, 7vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  margin: 12px 0 22px;
+}
+.intro {
+  max-width: 590px;
+  color: #a7b5c5;
+  font-size: 18px;
+  line-height: 1.65;
+  margin: 0;
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d0deed;
+  background: #152231;
+  border: 1px solid #28445f;
+  border-radius: 999px;
+  padding: 10px 15px;
+  margin-top: 42px;
+  font-size: 14px;
+}
+.statusDot {
+  width: 8px;
+  height: 8px;
+  background: #76d8b3;
+  border-radius: 50%;
+}
+a {
+  color: #8dc8ff;
+  margin-top: 28px;
+  text-decoration: none;
+  font-size: 14px;
+}
+a:hover {
+  text-decoration: underline;
+}

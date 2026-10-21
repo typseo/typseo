@@ -1,0 +1,31 @@
+{
+  "name": "typseo",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.4.1",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "turbo dev --filter=@typseo/playground",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "test": "vitest run",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "security:staged": "node scripts/check-git-safety.mjs --staged",
+    "security:tracked": "node scripts/check-git-safety.mjs --tracked",
+    "security:history": "node scripts/check-git-safety.mjs --history",
+    "changeset": "changeset",
+    "boundaries": "node scripts/check-package-boundaries.mjs"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.8",
+    "@types/node": "^22.0.0",
+    "prettier": "^3.9.10",
+    "turbo": "^2.11.10",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}

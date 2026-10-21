@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible Typseo problem
+title: 'bug: '
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the actual and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: Include minimal steps and versions. Do not include secrets.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: OS, Node.js, pnpm, browser

@@ -1,0 +1,8 @@
+{
+  "name": "@typseo/gsc",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {},
+  "description": "Optional Google Search Console adapter, planned for M5",
+  "sideEffects": false
+}
