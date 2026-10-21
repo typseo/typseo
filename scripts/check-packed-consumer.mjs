@@ -111,7 +111,11 @@ for (const specifier of specifiers) {
 `,
   );
 
-  run('pnpm', ['install', '--offline', '--ignore-scripts'], consumerDirectory);
+  run(
+    'pnpm',
+    ['install', '--prefer-offline', '--ignore-scripts'],
+    consumerDirectory,
+  );
   console.log(run('node', ['smoke.mjs'], consumerDirectory));
   console.log(
     `Packed consumer smoke check passed (${packageDirectories.length} local tarballs).`,
