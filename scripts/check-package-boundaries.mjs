@@ -18,14 +18,16 @@ for (const entry of packages) {
     failures.push(
       `${manifest.name}: package must remain private before release`,
     );
-  if (manifest.name === '@typseo/core') {
+  if (['@typseo/core', '@typseo/react', '@typseo/ui'].includes(manifest.name)) {
     const rootExport = manifest.exports?.['.'];
     if (
       Object.keys(manifest.exports ?? {}).length !== 1 ||
       rootExport?.types !== './dist/index.d.ts' ||
       rootExport?.default !== './dist/index.js'
     ) {
-      failures.push('core must expose only its built public entry point');
+      failures.push(
+        `${manifest.name}: must expose only its built public entry point`,
+      );
     }
   } else if (
     !manifest.exports ||

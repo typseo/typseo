@@ -2,86 +2,253 @@
   color-scheme: dark;
   font-family: Arial, Helvetica, sans-serif;
   background: #0b1018;
-  color: #f1f4f7;
+  color: #eef2f6;
 }
 
 * {
   box-sizing: border-box;
 }
-
 body {
   margin: 0;
   min-height: 100vh;
 }
-
-.shell {
-  width: min(760px, calc(100% - 48px));
-  min-height: 100vh;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+button {
+  font: inherit;
+}
+a {
+  color: inherit;
 }
 
-.mark {
+.workspace {
+  width: min(980px, calc(100% - 48px));
+  margin: 0 auto;
+}
+.siteHeader {
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #263240;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.brandMark {
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border: 1px solid #4978a5;
-  border-radius: 14px;
-  color: #8dc8ff;
-  font-size: 28px;
+  border: 1px solid #4c7cab;
+  border-radius: 9px;
+  color: #a6d5ff;
   font-weight: 800;
-  margin-bottom: 56px;
+}
+.headerMeta {
+  color: #a1afbf;
+  font-size: 13px;
+}
+.headerMeta span {
+  margin: 0 8px;
+  color: #536778;
 }
 
+.workspaceIntro {
+  padding: 64px 0 36px;
+}
 .eyebrow {
+  margin: 0;
   color: #8dc8ff;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 h1 {
-  max-width: 700px;
-  font-size: clamp(42px, 7vw, 76px);
-  line-height: 1.05;
-  letter-spacing: -0.055em;
-  margin: 12px 0 22px;
+  margin: 13px 0 13px;
+  font-size: 38px;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
 }
-.intro {
-  max-width: 590px;
-  color: #a7b5c5;
-  font-size: 18px;
-  line-height: 1.65;
+.workspaceIntro > p:last-child {
+  max-width: 610px;
   margin: 0;
+  color: #aebac7;
+  font-size: 15px;
+  line-height: 1.6;
 }
-.status {
+
+.editorCard {
+  overflow: hidden;
+  border: 1px solid #304152;
+  border-radius: 14px;
+  background: #111b26;
+  box-shadow: 0 18px 45px #00000028;
+}
+.editorCardHeader {
+  min-height: 76px;
+  padding: 17px 22px;
   display: flex;
+  gap: 20px;
   align-items: center;
-  gap: 10px;
-  color: #d0deed;
+  justify-content: space-between;
+  border-bottom: 1px solid #2a3948;
+}
+.editorCardHeader > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.documentLabel {
+  font-size: 15px;
+  font-weight: 700;
+}
+.documentHint {
+  color: #99aabd;
+  font-size: 12px;
+}
+.copyButton {
+  border: 1px solid #547da3;
+  border-radius: 8px;
+  background: #1c344b;
+  color: #d7eaff;
+  padding: 9px 13px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.copyButton:hover {
+  background: #274962;
+}
+button:focus-visible,
+a:focus-visible,
+.ProseMirror:focus-visible {
+  outline: 2px solid #8dc8ff;
+  outline-offset: 3px;
+}
+
+.editorToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 11px 16px;
+  border-bottom: 1px solid #2a3948;
   background: #152231;
-  border: 1px solid #28445f;
-  border-radius: 999px;
-  padding: 10px 15px;
-  margin-top: 42px;
-  font-size: 14px;
 }
-.statusDot {
-  width: 8px;
-  height: 8px;
-  background: #76d8b3;
-  border-radius: 50%;
+.editorToolbar button {
+  min-width: 38px;
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 6px 9px;
+  background: transparent;
+  color: #d2dfeb;
+  cursor: pointer;
+  font-size: 13px;
 }
-a {
-  color: #8dc8ff;
-  margin-top: 28px;
+.editorToolbar button:hover:not(:disabled) {
+  background: #243a4f;
+}
+.editorToolbar button[aria-pressed='true'] {
+  background: #305579;
+  color: #fff;
+}
+.editorToolbar button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+.editorToolbar button:nth-last-child(2) {
+  margin-left: auto;
+}
+.editorContent {
+  min-height: 360px;
+  padding: 38px min(8%, 70px);
+}
+.editorContent .ProseMirror {
+  min-height: 280px;
+  max-width: 68ch;
+  outline: none;
+  color: #e7edf4;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.editorContent .ProseMirror h2 {
+  font-size: 25px;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  margin: 0 0 18px;
+}
+.editorContent .ProseMirror p {
+  margin: 0 0 16px;
+}
+.editorContent .ProseMirror ul,
+.editorContent .ProseMirror ol {
+  padding-left: 1.6em;
+}
+.editorContent .ProseMirror ::selection {
+  background: #38648a;
+}
+.editorCardFooter {
+  min-height: 42px;
+  border-top: 1px solid #2a3948;
+  color: #99aabd;
+  font-size: 12px;
+  padding: 13px 22px;
+}
+.siteFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 34px 0 50px;
+  color: #92a3b4;
+  font-size: 12px;
+}
+.siteFooter a {
+  color: #a6d5ff;
   text-decoration: none;
-  font-size: 14px;
 }
-a:hover {
+.siteFooter a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .workspace {
+    width: min(100% - 28px, 980px);
+  }
+  .siteHeader {
+    min-height: 70px;
+  }
+  .workspaceIntro {
+    padding: 42px 0 28px;
+  }
+  h1 {
+    font-size: 29px;
+  }
+  .editorCardHeader {
+    padding: 15px;
+  }
+  .editorToolbar {
+    display: grid;
+    grid-template-columns: repeat(5, max-content);
+    padding: 9px;
+  }
+  .editorToolbar button:nth-last-child(2) {
+    grid-column: 1;
+    margin-left: 0;
+  }
+  .editorToolbar button:last-child {
+    grid-column: 2;
+  }
+  .editorContent {
+    padding: 26px 20px;
+    min-height: 330px;
+  }
+  .siteFooter {
+    flex-direction: column;
+    gap: 12px;
+  }
 }

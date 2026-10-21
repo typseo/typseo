@@ -1,21 +1,39 @@
+import { EditorDemo } from './editor-demo';
+
 export default function Home() {
   return (
-    <main className="shell">
-      <div className="mark">T</div>
-      <p className="eyebrow">Typseo / Playground</p>
-      <h1>Build better content tools.</h1>
-      <p className="intro">
-        The workspace is ready. This M0 playground verifies the Next.js
-        development host while the editor and SEO packages are built in later
-        milestones.
-      </p>
-      <div className="status">
-        <span className="statusDot" aria-hidden="true" />
-        Repository foundation · M0
-      </div>
-      <a href="https://github.com/neongodev" target="_blank" rel="noreferrer">
-        GitHub profile <span aria-hidden="true">↗</span>
-      </a>
+    <main className="workspace">
+      <header className="siteHeader">
+        <div className="brand">
+          <span className="brandMark">T</span>
+          <span>Typseo</span>
+        </div>
+        <span className="headerMeta">
+          Editor playground <span aria-hidden="true">/</span> M2
+        </span>
+      </header>
+
+      <section className="workspaceIntro" aria-labelledby="page-title">
+        <p className="eyebrow">React SDK · Tiptap v3</p>
+        <h1 id="page-title">A focused space to write.</h1>
+        <p>
+          Try the embeddable editor and its formatting controls. The SDK stays
+          headless; this playground supplies the theme.
+        </p>
+      </section>
+
+      <EditorDemo />
+
+      <footer className="siteFooter">
+        <span>Typseo is an open-source editor toolkit.</span>
+        <a
+          href="https://github.com/typseo/typseo"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View on GitHub <span aria-hidden="true">↗</span>
+        </a>
+      </footer>
     </main>
   );
 }

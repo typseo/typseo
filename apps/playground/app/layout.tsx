@@ -3,7 +3,7 @@ import './styles.css';
 
 export const metadata: Metadata = {
   title: 'Typseo Playground',
-  description: 'M0 workspace playground for Typseo',
+  description: 'Try the Typseo rich-text editor and React SDK',
 };
 
 export default function RootLayout({
