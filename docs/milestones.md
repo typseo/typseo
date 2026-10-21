@@ -61,3 +61,14 @@ Acceptance criteria:
 - The example Route Handler is disabled by default and in production; local opt-in requires server-only environment variables and a same-origin JSON request.
 - Tests cover validation, provider responses using an injected transport, UI review controls, and stale-selection protection.
 - Root install, typecheck, lint, test, format, boundary, security, and build checks pass.
+
+## M5 — External Integrations
+
+Acceptance criteria:
+
+- Optional `@typseo/ahrefs/server` requests a bounded keyword overview with a host-supplied API key; no live requests run in tests.
+- Optional `@typseo/gsc/server` requests Search Analytics with a host-supplied OAuth token resolver and validates property, dates, dimensions, and pagination.
+- Both adapters normalize limited response fields, surface upstream status and `Retry-After`, and do not silently retry or imply complete provider data.
+- Only server entrypoints are exported; neither adapter enters the client import graph or requires the editor or core package.
+- Docs explain credentials, OAuth, costs, quotas, privacy, and host-owned production controls.
+- Root install, typecheck, lint, test, format, boundary, security, and build checks pass.

@@ -23,6 +23,8 @@ for (const entry of packages) {
     '@typseo/react': ['.'],
     '@typseo/ui': ['.', './seo', './metadata-editor', './ai'],
     '@typseo/ai': ['.', './server'],
+    '@typseo/ahrefs': ['./server'],
+    '@typseo/gsc': ['./server'],
     '@typseo/next': ['.'],
   }[manifest.name];
   if (builtExports) {
@@ -88,6 +90,21 @@ for (const entry of packages) {
         'AI provider contracts must not depend on UI or editor packages',
       );
     }
+  }
+  if (manifest.name === '@typseo/ahrefs' || manifest.name === '@typseo/gsc') {
+    const deps = { ...manifest.dependencies, ...manifest.peerDependencies };
+    if (
+      Object.keys(deps).some(
+        (name) =>
+          name === 'react' ||
+          name === 'next' ||
+          name.startsWith('@tiptap/') ||
+          name.startsWith('@typseo/'),
+      )
+    )
+      failures.push(
+        `${manifest.name}: integration adapter must remain server-only and standalone`,
+      );
   }
   if (entry.name !== manifest.name.replace('@typseo/', ''))
     failures.push(`${entry.name}: directory/name mismatch`);
