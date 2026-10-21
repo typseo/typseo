@@ -1,0 +1,33 @@
+---
+title: AI API
+description: Validated request types at the root and provider implementation on the server subpath.
+---
+
+`@typseo/ai` exports `validateAiEditRequest(value: unknown): AiEditRequest` and types `AiCommand`, `AiEditRequest`, `AiEditResult`. `@typseo/ai/server` exports `createOpenAiCompatibleProvider` and types `AiProvider` and `OpenAiCompatibleOptions`.
+
+```ts
+type AiCommand = 'clarity' | 'shorten' | 'seo' | 'custom';
+interface AiEditRequest {
+  command: AiCommand;
+  text: string;
+  instruction?: string;
+  context?: { title?: string; focusKeyword?: string };
+}
+interface AiEditResult {
+  replacement: string;
+}
+interface AiProvider {
+  generateEdit(
+    request: AiEditRequest,
+    signal?: AbortSignal,
+  ): Promise<AiEditResult>;
+}
+interface OpenAiCompatibleOptions {
+  apiKey: string;
+  model: string;
+  endpoint?: string;
+  fetcher?: typeof fetch;
+}
+```
+
+Keep `/server` out of browser bundles. The adapter requires HTTPS and returns plain-text suggestions. The host must enforce authorization, quotas, and human review. See [AI Integration](/docs/ai-integration).

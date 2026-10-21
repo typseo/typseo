@@ -1,0 +1,11 @@
+{
+  "title": "Editor",
+  "pages": [
+    "index",
+    "tiptap-editor",
+    "react-hooks",
+    "toolbar",
+    "extensions",
+    "customization"
+  ]
+}

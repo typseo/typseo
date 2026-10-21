@@ -1,0 +1,26 @@
+---
+title: Metadata
+description: Controlled title, description, and focus-keyword inputs.
+---
+
+`MetadataEditor` and `KeywordInput` live at `@typseo/ui/metadata-editor`. They are controlled React components; neither stores content nor changes SEO rules.
+
+```tsx
+'use client';
+
+import { useState } from 'react';
+import { MetadataEditor } from '@typseo/ui/metadata-editor';
+
+export function PageFields() {
+  const [value, setValue] = useState({
+    title: '',
+    metaDescription: '',
+    focusKeyword: '',
+  });
+  return <MetadataEditor value={value} onChange={setValue} />;
+}
+```
+
+The page title belongs to the page/content model, not to the first editor heading. When publishing with Next.js, construct server metadata from persisted fields; browser-only drafts cannot become server-rendered metadata automatically. See [Next.js integration](/docs/integrations/nextjs).
+
+<SeoLivePreview />

@@ -1,0 +1,27 @@
+---
+title: React Hooks
+description: Control the Tiptap instance with useTypseoEditor.
+---
+
+`useTypseoEditor(options)` returns a Tiptap `Editor | null`. Render it with Tiptap's `EditorContent` and supply your own controls.
+
+```tsx
+'use client';
+
+import { EditorContent } from '@tiptap/react';
+import { useTypseoEditor } from '@typseo/react';
+
+export function MyEditor() {
+  const editor = useTypseoEditor({
+    defaultValue: '<p>Start writing</p>',
+    onChange: (html) => console.log(html),
+  });
+  return <EditorContent editor={editor} />;
+}
+```
+
+## State contract
+
+External `value` changes replace the document without echoing `onChange`. `editable` may be toggled. `editorProps` passes through to Tiptap. `starterKit` defaults to `true`; setting it to `false` means your extensions must provide a complete schema. The hook opts out of transaction-driven React rerenders, but your own `onChange` callback can still make a parent rerender each keystroke.
+
+See the exact [`UseTypseoEditorOptions`](/docs/api-reference/react) and [Extensions](/docs/editor/extensions).

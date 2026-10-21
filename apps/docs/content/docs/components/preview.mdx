@@ -1,0 +1,35 @@
+---
+title: Component Preview
+description: Edit real Typseo metadata controls and watch the SEO components respond.
+---
+
+The preview imports `MetadataEditor` from `@typseo/ui/metadata-editor`, `SEOScore`, `SEOChecklist`, and `SERPPreview` from `@typseo/ui/seo`, and `analyzeSeoDocument` from `@typseo/core`. There is no mock score. The example body is fixed to make metadata changes easy to isolate.
+
+<SeoLivePreview />
+
+## Source
+
+The complete running component is at [`apps/docs/components/seo-live-preview.tsx`](https://github.com/typseo/typseo/blob/feat/docs-fumadocs/apps/docs/components/seo-live-preview.tsx). This reduced snippet shows the data flow:
+
+```tsx
+'use client';
+
+const [metadata, setMetadata] = useState({
+  title: '',
+  metaDescription: '',
+  focusKeyword: '',
+});
+const document = { ...metadata, bodyText, headings };
+const analysis = analyzeSeoDocument(document);
+
+return (
+  <>
+    <MetadataEditor value={metadata} onChange={setMetadata} />
+    <SEOScore analysis={analysis} />
+    <SEOChecklist analysis={analysis} />
+    <SERPPreview document={document} url="https://example.com/article" />
+  </>
+);
+```
+
+Use the code-block copy button to adapt this example. This preview is client-side only; production metadata still comes from persisted server content.

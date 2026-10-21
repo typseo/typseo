@@ -1,0 +1,50 @@
+---
+title: Quick Start
+description: Edit a document, build a page snapshot, and inspect the analysis.
+---
+
+Typseo separates writing from analysis. Keep the editor responsive, then analyze a reader-visible snapshot when its content changes.
+
+<Tabs items={['Editor', 'SEO analysis']}>
+  <Tab value="Editor">
+
+```tsx
+'use client';
+
+import { TypseoEditor } from '@typseo/ui';
+
+export function ArticleEditor() {
+  return (
+    <TypseoEditor
+      defaultValue="<p>Start writing</p>"
+      ariaLabel="Article body"
+      onChange={(html) => console.log(html)}
+    />
+  );
+}
+```
+
+  </Tab>
+  <Tab value="SEO analysis">
+
+```ts
+import { analyzeSeoDocument } from '@typseo/core';
+
+const analysis = analyzeSeoDocument({
+  title: 'A clear page title',
+  metaDescription: 'A useful summary for readers.',
+  bodyText: 'A clear page title\nThe complete visible article text…',
+  headings: [{ level: 1, text: 'A clear page title' }],
+});
+
+console.log(analysis.score, analysis.issues);
+```
+
+  </Tab>
+</Tabs>
+
+`title` means the actual page title, not the first H1. `bodyText` includes all reader-visible body text, including headings, with block boundaries preserved. Do not pass HTML as plain text. For the real Tiptap-to-snapshot adapter, inspect the [Playground](/docs/examples/playground).
+
+## Next steps
+
+Read [Architecture](/docs/introduction/architecture), then use [Components](/docs/components) if you want optional UI rather than a headless integration.

@@ -1,0 +1,74 @@
+---
+title: Installation
+description: Prerequisites and workspace setup before the first public package release.
+---
+
+## Prerequisites
+
+- Node.js **20.9 or newer** (the workspace is verified with Node 22).
+- pnpm **10.4.1**, as pinned by the root `packageManager` field.
+- Git and a modern browser.
+
+<Callout type="warning" title="Not published to npm">
+  All Typseo packages are currently private. Use the monorepo; `pnpm add
+  @typseo/core` from the public registry is not a supported step yet.
+</Callout>
+
+<Steps>
+  <Step>
+    ### Clone and install
+
+    ```bash
+    git clone https://github.com/typseo/typseo.git
+    cd typseo
+    pnpm install --frozen-lockfile
+    ```
+
+  </Step>
+  <Step>
+    ### Run an app
+
+    ```bash
+    pnpm dev
+    pnpm dev:docs
+    ```
+
+    Playground opens at `http://localhost:3000`; docs open at `http://localhost:3001`.
+
+  </Step>
+  <Step>
+    ### Check the workspace
+
+    ```bash
+    pnpm typecheck
+    pnpm test
+    pnpm build
+    ```
+
+  </Step>
+</Steps>
+
+## Workspace layout
+
+<Files>
+  <Folder name="apps" defaultOpen>
+    <File name="playground" />
+    <File name="docs" />
+  </Folder>
+  <Folder name="packages" defaultOpen>
+    <File name="core" />
+    <File name="react" />
+    <File name="ui" />
+    <File name="next" />
+    <File name="ai" />
+    <File name="ahrefs" />
+    <File name="gsc" />
+  </Folder>
+  <Folder name="examples">
+    <File name="nextjs-app-router" />
+    <File name="nextjs-pages-router" />
+    <File name="react-vite" />
+  </Folder>
+</Files>
+
+See [Quick Start](/docs/introduction/quick-start) for the first editor and analysis flow.

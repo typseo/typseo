@@ -1,0 +1,30 @@
+---
+title: SEO Engine
+description: Create a reader-visible SeoDocument and run synchronous rules.
+---
+
+```ts
+import { analyzeSeoDocument } from '@typseo/core';
+
+const analysis = analyzeSeoDocument({
+  title: 'A practical guide to writing clear SEO titles',
+  metaDescription:
+    'Learn how to write useful titles and descriptions for readers.',
+  bodyText:
+    'A practical guide to writing clear SEO titles\nStart with your reader\nThe complete visible article text…',
+  headings: [
+    { level: 1, text: 'A practical guide to writing clear SEO titles' },
+    { level: 2, text: 'Start with your reader' },
+  ],
+  images: [{ alt: 'An example search result with a clear title' }],
+  focusKeyword: 'SEO titles',
+});
+```
+
+## Snapshot contract
+
+`title` is the **actual page title**, not necessarily an H1. `bodyText` is the complete reader-visible body text including headings, with block boundaries preserved. `headings` are in rendered order and include the H1. `images` can mark an intentionally decorative image with `decorative: true`. `focusKeyword` is optional; keyword checks skip when absent.
+
+Do not concatenate text across blocks without separators and do not pass raw HTML as `bodyText`. The Playground's adapter is the reference implementation for Tiptap content.
+
+The function is synchronous and does no network work. Pass a replacement `SeoRule[]` as the second argument to customize policy. Rule IDs must be unique and weights positive, finite numbers.

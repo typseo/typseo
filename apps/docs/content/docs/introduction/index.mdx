@@ -1,0 +1,24 @@
+---
+title: Overview
+description: What Typseo ships today, and what your application still owns.
+---
+
+Typseo is an open-source library suite for adding a rich-text editor and an editor-independent SEO checklist to a React application. The current workspace contains seven private packages, a local Playground, and three standalone integration examples.
+
+## Design boundaries
+
+The editor is client-side and has no built-in persistence. The SEO engine is synchronous, deterministic, and independent of Tiptap or React. Metadata helpers run server-side in Next.js. Provider credentials stay in trusted server code.
+
+| Typseo provides                            | Your app provides                                      |
+| ------------------------------------------ | ------------------------------------------------------ |
+| Editing primitives and accessible controls | Storage, auth, publishing and design system            |
+| SEO checks and a weighted score            | A reader-visible page snapshot and editorial policy    |
+| Optional provider adapters                 | Credentials, user consent, quotas and privacy handling |
+
+The score is editorial guidance, not a search ranking prediction. Read [SEO Engine](/docs/seo-toolkit/seo-engine) for its exact contract.
+
+## Current status
+
+M1–M5 capabilities are implemented in the workspace. Packages are still `private: true`; a public release and benchmarks have not been claimed. AI generation is disabled in the Playground unless explicitly configured for local development. Ahrefs and Google Search Console adapters are server-only and are not enabled in the Playground by default.
+
+Continue to [Installation](/docs/introduction/installation) or inspect the [repository](https://github.com/typseo/typseo).

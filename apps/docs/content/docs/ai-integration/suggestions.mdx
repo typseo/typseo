@@ -1,0 +1,18 @@
+---
+title: Suggestions
+description: Validate edit requests and treat model output as proposed plain text.
+---
+
+Supported `AiCommand` values are `clarity`, `shorten`, `seo`, and `custom`. `validateAiEditRequest(value)` bounds text to 1–10,000 characters and an optional instruction to 1,000; `custom` requires a nonblank instruction. Context can include a title and focus keyword, each at most 200 characters.
+
+```ts
+import { validateAiEditRequest } from '@typseo/ai';
+
+const request = validateAiEditRequest({
+  command: 'clarity',
+  text: selectedText,
+  context: { title: pageTitle },
+});
+```
+
+The provider returns a plain-text replacement, not trusted HTML or a document mutation. `AICommandMenu` and `AIChatPanel` only collect the user's choice and instruction; they do not send network requests. See [Human Review](/docs/ai-integration/human-review) before applying any suggestion.

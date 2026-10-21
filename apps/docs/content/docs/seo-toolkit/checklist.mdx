@@ -1,0 +1,20 @@
+---
+title: Checklist
+description: Render rule outcomes and connect failed checks to your editor.
+---
+
+```tsx
+import { SEOChecklist } from '@typseo/ui/seo';
+
+<SEOChecklist
+  analysis={analysis}
+  onSelectIssue={(check) => {
+    // Focus the corresponding editor field in your host app.
+    console.log(check.id);
+  }}
+/>;
+```
+
+`SEOChecklist` displays the supplied `analysis.checks`. Each row exposes `data-status`; a failing row can become a button when `onSelectIssue` is provided. The host decides what selecting a check means. Every failed check includes a code, severity, field, and actionable message in `analysis.issues`.
+
+Default checks cover a title of 30–60 characters, description of 70–160 characters, at least 200 word-like body tokens, exactly one H1, no skipped heading levels, informative-image alt text, and optional keyword use. These thresholds are editable through replacement rules, not search-engine requirements.

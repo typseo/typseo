@@ -1,0 +1,46 @@
+---
+title: Documentation
+description: Build an editor and SEO workflow that stays in your app.
+---
+
+<DocsHero />
+
+<div className="docs-quicklinks">
+  <a href="/docs/introduction/quick-start">
+    <strong>Get started →</strong>
+    <span>Clone the monorepo and run your first editor.</span>
+  </a>
+  <a href="/docs/seo-toolkit/seo-engine">
+    <strong>Understand the engine →</strong>
+    <span>Analyze the page a reader will actually see.</span>
+  </a>
+  <a href="/docs/components/preview">
+    <strong>Explore components →</strong>
+    <span>Try the real SEO UI, then inspect its source.</span>
+  </a>
+</div>
+
+## The toolkit at a glance
+
+| Layer             | Package                                       | Responsibility                                   |
+| ----------------- | --------------------------------------------- | ------------------------------------------------ |
+| Analysis          | `@typseo/core`                                | Pure, synchronous SEO rules over a page snapshot |
+| Editing           | `@typseo/react`                               | Headless Tiptap v3 hook                          |
+| Interface         | `@typseo/ui`                                  | Optional, unstyled editor and SEO components     |
+| Publishing        | `@typseo/next`                                | App Router metadata and Article JSON-LD helpers  |
+| Optional services | `@typseo/ai`, `@typseo/ahrefs`, `@typseo/gsc` | Server-side provider adapters                    |
+
+Typseo does not provide hosted storage, accounts, publishing, or automatic ranking. Your app owns the content model and deployment. See the [architecture](/docs/introduction/architecture) before choosing packages.
+
+## Find your path
+
+- New to the workspace? Start with [Installation](/docs/introduction/installation) and [Quick Start](/docs/introduction/quick-start).
+- Building an editor? Read [Tiptap Editor](/docs/editor/tiptap-editor) and [React Hooks](/docs/editor/react-hooks).
+- Integrating an existing application? Choose [Next.js](/docs/integrations/nextjs) or [React/Vite](/docs/integrations/react-vite).
+- Checking exact exports? Use the [API Reference](/docs/api-reference).
+
+<Callout type="info" title="Active development">
+  The packages remain private until release approval. Examples and code snippets
+  are intended to run from this pnpm workspace; there is no public npm install
+  claim yet.
+</Callout>

@@ -1,0 +1,22 @@
+---
+title: Providers
+description: Keep the optional AI adapter and its credential on the server.
+---
+
+`createOpenAiCompatibleProvider(options)` is exported only from `@typseo/ai/server`. It accepts an API key, model, optional HTTPS endpoint, and optional `fetcher`. Its `generateEdit(request, signal?)` method returns `{ replacement: string }`.
+
+```ts
+import { createOpenAiCompatibleProvider } from '@typseo/ai/server';
+
+const provider = createOpenAiCompatibleProvider({
+  apiKey: getServerSecret(),
+  model: getConfiguredModel(),
+});
+
+const suggestion = await provider.generateEdit({
+  command: 'clarity',
+  text: 'A selected passage.',
+});
+```
+
+This is an OpenAI-compatible protocol adapter, not a general provider marketplace. Never import `/server` into client code, expose the key through `NEXT_PUBLIC_`, or send a whole draft without user consent. The local Playground route uses a 20-second timeout and same-origin JSON POST but is not production auth or quota infrastructure.

@@ -1,0 +1,28 @@
+---
+title: Toolbar
+description: Accessible formatting controls that follow the active Tiptap editor.
+---
+
+`EditorToolbar` is exported separately from `@typseo/ui`. `TypseoEditor` includes it by default; set `showToolbar={false}` to hide it and build your own controls.
+
+```tsx
+'use client';
+
+import { EditorContent } from '@tiptap/react';
+import { useTypseoEditor } from '@typseo/react';
+import { EditorToolbar } from '@typseo/ui';
+
+export function CustomEditor() {
+  const editor = useTypseoEditor();
+  return (
+    <>
+      <EditorToolbar editor={editor} />
+      <EditorContent editor={editor} />
+    </>
+  );
+}
+```
+
+Toolbar buttons expose accessible labels, pressed state, and disabled state. Host CSS must provide visible focus indicators, contrast, and spacing. The toolbar operates on the editor instance; it does not own persistence or analysis.
+
+See [UI API](/docs/api-reference/ui) for props.

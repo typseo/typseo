@@ -1,0 +1,18 @@
+---
+title: SERP Preview
+description: A lightweight illustration of title, URL, and description.
+---
+
+```tsx
+import { SERPPreview } from '@typseo/ui/seo';
+
+<SERPPreview
+  document={{
+    title: 'A useful article',
+    metaDescription: 'A concise summary.',
+  }}
+  url="https://example.com/article"
+/>;
+```
+
+`SERPPreview` formats a valid URL for display and falls back to the supplied string if it cannot parse it. Blank titles and descriptions receive visible placeholders. It is a visual editing aid only: search engines may rewrite snippets or show different URLs. It does not publish metadata. Use [Next.js helpers](/docs/integrations/nextjs) for server-rendered metadata.

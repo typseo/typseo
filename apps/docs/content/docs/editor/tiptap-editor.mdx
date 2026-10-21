@@ -1,0 +1,36 @@
+---
+title: Tiptap Editor
+description: Embed the optional Typseo editor shell in a client component.
+---
+
+`TypseoEditor` combines the Tiptap-backed hook, editable region, and formatting toolbar. The component is intentionally unstyled; pass class names and style it in your app.
+
+<EditorLivePreview />
+
+```tsx
+'use client';
+
+import { TypseoEditor } from '@typseo/ui';
+
+export function ArticleBody() {
+  return (
+    <TypseoEditor
+      defaultValue="<p>Draft</p>"
+      ariaLabel="Article body"
+      className="article-editor"
+      toolbarClassName="article-toolbar"
+      contentClassName="article-content"
+      onChange={(html) => console.log(html)}
+    />
+  );
+}
+```
+
+Use `value` for a controlled editor or `defaultValue` for an uncontrolled editor, never both. `onChange` receives serialized HTML and the Tiptap editor instance after document changes. The hook delays initialization until the client, so the instance is initially `null`.
+
+<Callout type="info" title="Your data model">
+  The editor does not persist HTML. Save content in your own app, then derive
+  the [SEO snapshot](/docs/seo-toolkit/seo-engine) from what readers will see.
+</Callout>
+
+The [Playground](/docs/examples/playground) shows a more complete host, including local drafts and SEO analysis.

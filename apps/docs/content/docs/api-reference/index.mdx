@@ -1,0 +1,16 @@
+---
+title: API Reference
+description: Public exports from the current TypeScript package entry points.
+---
+
+This reference mirrors the exported symbols in `packages/*/src/index.ts` and declared subpaths. It does not describe unpublished npm packages as installable. The repository source remains authoritative during development.
+
+| Package                               | Entry point                | Purpose                                 |
+| ------------------------------------- | -------------------------- | --------------------------------------- |
+| [Core](/docs/api-reference/core)      | `@typseo/core`             | Snapshot types, default rules, analysis |
+| [React](/docs/api-reference/react)    | `@typseo/react`            | Tiptap hook and options                 |
+| [UI](/docs/api-reference/ui)          | `@typseo/ui` and subpaths  | Optional components                     |
+| [AI](/docs/api-reference/ai)          | `@typseo/ai` and `/server` | Request validation and provider         |
+| [Next.js](/docs/api-reference/nextjs) | `@typseo/next`             | Metadata and Article schema             |
+
+Ahrefs and GSC server-only contracts are documented under [Integrations](/docs/integrations).

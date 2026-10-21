@@ -3,6 +3,7 @@ node_modules/
 .turbo/
 .playwright-cli/
 .next/
+.source/
 dist/
 build/
 coverage/

@@ -1,0 +1,17 @@
+---
+title: UI API
+description: Public component exports and their actual package subpaths.
+---
+
+| Import path                  | Value exports                                           | Type exports                                                                |
+| ---------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `@typseo/ui`                 | `TypseoEditor`, `EditorToolbar`                         | `TypseoEditorProps`, `EditorToolbarProps`                                   |
+| `@typseo/ui/seo`             | `SEOScore`, `SEOChecklist`, `SERPPreview`, `SEOSidebar` | `SEOScoreProps`, `SEOChecklistProps`, `SERPPreviewProps`, `SEOSidebarProps` |
+| `@typseo/ui/metadata-editor` | `MetadataEditor`, `KeywordInput`                        | `EditableMetadata`, `MetadataEditorProps`, `KeywordInputProps`              |
+| `@typseo/ui/ai`              | `AICommandMenu`, `AIChatPanel`, `AIChangesPreview`      | corresponding `*Props` types                                                |
+
+`TypseoEditorProps` extends `UseTypseoEditorOptions` and adds `className`, `toolbarClassName`, `contentClassName`, `ariaLabel`, and `showToolbar`. `EditorToolbarProps` requires `editor: TypseoEditorInstance | null`.
+
+SEO views receive an existing `SeoAnalysis`; they never run analysis themselves. `SEOChecklist` and `SEOSidebar` can call `onSelectIssue(check: SeoCheck)`. `SERPPreview` accepts a title/description document and `url: string`. `MetadataEditor` is controlled through `value` and `onChange`. AI controls are similarly controlled; no network request is performed by a UI component.
+
+See [Props](/docs/components/props) and [live preview](/docs/components/preview).

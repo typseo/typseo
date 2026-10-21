@@ -1,0 +1,33 @@
+---
+title: Customization
+description: Host-owned styles, controlled content, and performance boundaries.
+---
+
+Typseo components are deliberately unstyled. Supply `className`, `toolbarClassName`, and `contentClassName` to `TypseoEditor`; target toolbar buttons and `.tiptap` descendants in your own CSS.
+
+```css
+.article-editor {
+  border: 1px solid #d4d4d4;
+  border-radius: 0.6rem;
+}
+.article-toolbar {
+  display: flex;
+  gap: 0.35rem;
+  border-bottom: 1px solid #d4d4d4;
+}
+.article-content .tiptap {
+  min-height: 18rem;
+  padding: 1rem;
+  outline: none;
+}
+.article-editor :focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+```
+
+## Controlled versus uncontrolled
+
+Use `defaultValue` when the editor owns its current document. Use `value` when the parent is authoritative, and persist changes in `onChange`. Avoid passing a stale `value` back to the editor after every keystroke.
+
+SEO analysis is intentionally outside the editor hot path. Schedule it with a short debounce or on save, and build a complete page snapshot, including the real page title. Bundle size and typing latency have not yet been benchmarked by this repository.
