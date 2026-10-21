@@ -18,9 +18,10 @@ The packages have explicit ESM exports and declaration paths. `@typseo/ahrefs` a
 
 ## Findings on 2026-10-21
 
-- `pnpm audit --prod` reported no known vulnerabilities. The full audit reported one high-severity `braces` and one moderate `sprintf-js` advisory through the development-only Changesets dependency graph; the audit showed no patched versions. Recheck advisories before release and avoid untrusted inputs to the release tooling.
-- The React/Vite example builds but Vite reports an approximately 637 kB minified editor chunk (about 202 kB gzip) and ignores React Server Component `use client` directives, which have no meaning in Vite. Measure the consumer bundle and typing latency before claiming performance targets.
-- GitHub Actions currently emits notices about Node 20-based action runtimes and an upcoming `ubuntu-latest` image migration. These are not failing checks but should be refreshed/tested before release.
+- After the Changesets 3 and Vite 8 upgrades, `pnpm audit --prod` reports no known vulnerabilities. The full audit reports one high-severity `braces` advisory through the development-only `eslint-config-next` → `@next/eslint-plugin-next` → `fast-glob` → `micromatch` path; the audit lists no patched version. Recheck before release and avoid untrusted glob patterns in development tooling.
+- `pnpm release:check` passes for all seven packages on a frozen install. This verifies prospective tarball contents only; it does not prove that a fresh consumer can install every package.
+- The React/Vite example builds with Vite 8, but its main JavaScript chunk is about 627 kB minified (197 kB gzip). Rolldown warns that React Server Component `use client` directives may not be preserved when bundling; those directives have no client-side meaning in Vite. Measure the consumer bundle and typing latency before claiming performance targets.
+- The latest GitHub Actions run passed and emitted an `ubuntu-latest` image migration notice. Recheck the runner image and release workflow compatibility before publishing.
 
 ## If a beta must be withdrawn
 
