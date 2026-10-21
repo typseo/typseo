@@ -82,3 +82,12 @@ Acceptance criteria:
 - Examples distinguish server-rendered metadata from client-side editor state; they do not invent canonical URLs, production persistence, or structured-data provenance.
 - Root frozen install, typecheck, lint, test, format, boundary, security, and production build checks pass with the new apps included in the workspace.
 - Work is reviewed in a PR before merge. Package publication remains M7 work.
+
+## M7 — Release Preparation
+
+Acceptance criteria before a public beta:
+
+- Every publishable package has explicit exports, package metadata, a package README, and the MIT license in its dry-run tarball.
+- CI verifies package artifacts after building; a separate checklist records package ownership, versioning, provenance, dependency security, and release rollback steps.
+- A publishing workflow is gated by owner-approved npm namespace and trusted-publisher configuration. No package is made public or published solely by merging preparation code.
+- Representative integrations build and tests pass on a clean install; remaining bundle-size and advisory findings are documented rather than silently ignored.

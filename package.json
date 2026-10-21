@@ -19,7 +19,8 @@
     "security:tracked": "node scripts/check-git-safety.mjs --tracked",
     "security:history": "node scripts/check-git-safety.mjs --history",
     "changeset": "changeset",
-    "boundaries": "node scripts/check-package-boundaries.mjs"
+    "boundaries": "node scripts/check-package-boundaries.mjs",
+    "release:check": "pnpm build && node scripts/check-release-artifacts.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

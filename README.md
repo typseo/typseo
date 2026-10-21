@@ -35,4 +35,6 @@ The pre-commit hook also checks staged paths and content. Run `git config core.h
 
 See the [documentation site](apps/docs/README.md), [runnable examples](examples/README.md), [SEO Core API](docs/seo-core.md), [Editor & React SDK API](docs/editor-react.md), [SEO UI & Next.js helpers](docs/seo-ui-next.md), [AI integration](docs/ai-integration.md), [external integrations](docs/external-integrations.md), [playground guide](docs/playground.md), [architecture](docs/architecture.md), [milestones](docs/milestones.md), and [contributing guide](CONTRIBUTING.md).
 
+Release preparation is tracked in the [public beta checklist](docs/release-preparation.md). `pnpm release:check` verifies prospective package contents without publishing them.
+
 The project uses the [MIT License](LICENSE). Package publication remains deferred until M7 and project-owner approval.

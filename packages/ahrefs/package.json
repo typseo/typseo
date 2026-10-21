@@ -2,6 +2,12 @@
   "name": "@typseo/ahrefs",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typseo/typseo.git",
+    "directory": "packages/ahrefs"
+  },
   "type": "module",
   "description": "Optional server-side Ahrefs keyword adapter",
   "sideEffects": false,
@@ -15,7 +21,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-package-license.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "tsc -p tsconfig.json --noUnusedLocals --noUnusedParameters"
   }
