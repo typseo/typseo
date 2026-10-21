@@ -49,3 +49,15 @@ Acceptance criteria:
 - The Playground has a real App Router example route using the package APIs without fabricated canonical URLs or schema fields.
 - Tests cover score rendering, checklist interaction, controlled metadata editing, metadata output, unsafe URLs, and JSON-LD serialization.
 - Root install, typecheck, lint, test, format, boundary, security, and build checks pass; AI and external integrations remain out of scope.
+
+## M4 — AI Integration
+
+Acceptance criteria:
+
+- `@typseo/ai` validates bounded edit requests and exposes a provider-agnostic server contract and an HTTPS OpenAI-compatible adapter.
+- No provider key, model, or server adapter is imported by client UI; provider calls are opt-in and never run in tests.
+- Reusable AI command, custom-instruction, and accept/reject preview components remain host-stylable.
+- Playground applies accepted suggestions as plain text only when the selected passage and document are unchanged. Rejection never modifies the editor.
+- The example Route Handler is disabled by default and in production; local opt-in requires server-only environment variables and a same-origin JSON request.
+- Tests cover validation, provider responses using an injected transport, UI review controls, and stale-selection protection.
+- Root install, typecheck, lint, test, format, boundary, security, and build checks pass.

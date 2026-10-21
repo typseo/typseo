@@ -34,6 +34,7 @@ import { Input } from '@/components/ui/input';
 import { PlaygroundToolbar } from '@/components/playground-toolbar';
 import { SeoPanel, type PanelTab } from '@/components/seo-panel';
 import { analyzeEditorDocument, countWords } from '@/lib/seo';
+import { applyAiEditToEditor, type CapturedSelection } from '@/lib/ai-editor';
 import { useDocumentWorkspace } from '@/lib/use-document-workspace';
 
 const themeKey = 'typseo-playground-theme';
@@ -85,6 +86,9 @@ export function PlaygroundApp() {
   const [themeReady, setThemeReady] = useState(false);
   const [editorJson, setEditorJson] = useState<JSONContent>(emptyJson);
   const [selectedText, setSelectedText] = useState('');
+  const [selectedRange, setSelectedRange] = useState<CapturedSelection | null>(
+    null,
+  );
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -172,6 +176,8 @@ export function PlaygroundApp() {
       return;
     }
     selectDocument(id);
+    setSelectedText('');
+    setSelectedRange(null);
     setPreview(false);
     setShowSidebarMobile(false);
     setShowAnalysisMobile(false);
@@ -179,6 +185,8 @@ export function PlaygroundApp() {
 
   function createDocument() {
     createWorkspaceDocument();
+    setSelectedText('');
+    setSelectedRange(null);
     setPreview(false);
     setShowSidebarMobile(false);
     setShowAnalysisMobile(false);
@@ -195,8 +203,26 @@ export function PlaygroundApp() {
     if (editor) {
       const { from, to } = editor.state.selection;
       setSelectedText(editor.state.doc.textBetween(from, to, ' '));
+      setSelectedRange({ from, to, documentId: activeId });
     }
     openPanel('assistant');
+  }
+
+  function acceptAiSuggestion(original: string, replacement: string) {
+    if (
+      !applyAiEditToEditor(
+        editor,
+        selectedRange,
+        activeId,
+        original,
+        replacement,
+      )
+    )
+      return false;
+    setSelectedText('');
+    setSelectedRange(null);
+    editor?.commands.focus();
+    return true;
   }
 
   function refreshAnalysis() {
@@ -559,6 +585,7 @@ export function PlaygroundApp() {
             analysis={analysis}
             snapshot={snapshot}
             selectedText={selectedText}
+            onAcceptAiSuggestion={acceptAiSuggestion}
             onUpdateDocument={updateDocument}
             onRefresh={refreshAnalysis}
             onFocusField={focusField}

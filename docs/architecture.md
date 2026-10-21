@@ -1,6 +1,6 @@
 # Architecture boundaries
 
-Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 created private package shells. M1 implements `@typseo/core`; M2 adds `@typseo/react` and editor components in `@typseo/ui`; M3 adds reusable SEO UI and `@typseo/next`. These four packages have built public entry points but remain private until release approval. The remaining packages still explicitly export nothing and contain no product APIs or build targets.
+Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 created private package shells. M1 implements `@typseo/core`; M2 adds `@typseo/react` and editor components in `@typseo/ui`; M3 adds reusable SEO UI and `@typseo/next`; M4 adds opt-in AI editing. These five packages have built public entry points but remain private until release approval. Ahrefs and GSC still explicitly export nothing and contain no product APIs or build targets.
 
 | Package          | Planned responsibility                              | Earliest milestone |
 | ---------------- | --------------------------------------------------- | ------------------ |
@@ -12,7 +12,7 @@ Typseo is a library suite intended for existing React, Next.js App Router, Next.
 | `@typseo/ahrefs` | Optional Ahrefs BYOK adapter                        | M5                 |
 | `@typseo/gsc`    | Optional Search Console adapter                     | M5                 |
 
-Dependency direction: `core` has no React, Tiptap, Next.js, provider SDK, or integration dependency. React and UI may depend on core; Next.js, AI, Ahrefs, and GSC remain optional. Server-only credentials must never enter a client import graph. Cross-package imports must use declared package dependencies and public exports, not relative paths into another package's source.
+Dependency direction: `core` has no React, Tiptap, Next.js, provider SDK, or integration dependency. React and UI may depend on core; Next.js, AI, Ahrefs, and GSC remain optional. Server-only credentials must never enter a client import graph. `@typseo/ai` exports request types at its root and the provider adapter only at `@typseo/ai/server`; client UI uses only the root types. Cross-package imports must use declared package dependencies and public exports, not relative paths into another package's source.
 
 The Next.js playground under `apps/playground` is a development host. It is not an SDK package and does not define production component behavior. Its `/seo-example` route demonstrates M3 integration without adding a separately deployed app. A standalone documentation site and broader examples remain scheduled for M6.
 

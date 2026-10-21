@@ -1038,6 +1038,80 @@ button:disabled {
 }
 .assistant-tasks button {
   font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 9px;
+  background: var(--background);
+}
+.assistant-tasks button[aria-pressed='true'] {
+  background: var(--secondary);
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+.assistant-tasks button:focus-visible,
+.assistant-custom button:focus-visible,
+.assistant-preview button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.assistant-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+}
+.assistant-custom textarea {
+  min-height: 80px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px;
+  background: var(--background);
+  color: var(--foreground);
+}
+.assistant-custom button,
+.assistant-preview button {
+  align-self: flex-start;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+.assistant-custom button:disabled,
+.assistant-preview button:disabled {
+  opacity: 0.5;
+}
+.assistant-error {
+  color: var(--destructive) !important;
+}
+.assistant-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 10px;
+  padding-top: 14px;
+}
+.assistant-preview h3 {
+  font-size: 11px;
+  font-weight: 700;
+  margin: 0 0 5px;
+}
+.assistant-preview p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+}
+.assistant-preview > div:last-child {
+  display: flex;
+  gap: 8px;
+}
+.assistant-preview > div:last-child button:last-child {
+  background: var(--foreground);
+  color: var(--background);
 }
 .assistant-panel > button {
   align-self: flex-start;

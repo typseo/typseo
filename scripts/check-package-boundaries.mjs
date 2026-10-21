@@ -21,7 +21,8 @@ for (const entry of packages) {
   const builtExports = {
     '@typseo/core': ['.'],
     '@typseo/react': ['.'],
-    '@typseo/ui': ['.', './seo', './metadata-editor'],
+    '@typseo/ui': ['.', './seo', './metadata-editor', './ai'],
+    '@typseo/ai': ['.', './server'],
     '@typseo/next': ['.'],
   }[manifest.name];
   if (builtExports) {
@@ -70,6 +71,22 @@ for (const entry of packages) {
       )
     ) {
       failures.push('next helpers must not depend on React, Tiptap, or UI');
+    }
+  }
+  if (manifest.name === '@typseo/ai') {
+    const deps = { ...manifest.dependencies, ...manifest.peerDependencies };
+    if (
+      Object.keys(deps).some(
+        (name) =>
+          name === 'react' ||
+          name === 'next' ||
+          name.startsWith('@tiptap/') ||
+          name === '@typseo/ui',
+      )
+    ) {
+      failures.push(
+        'AI provider contracts must not depend on UI or editor packages',
+      );
     }
   }
   if (entry.name !== manifest.name.replace('@typseo/', ''))

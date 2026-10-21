@@ -1,18 +1,19 @@
 'use client';
 
 import type { SeoAnalysis, SeoCheck, SeoDocument } from '@typseo/core';
+import type { AiCommand, AiEditResult } from '@typseo/ai';
+import { AIChangesPreview, AIChatPanel, AICommandMenu } from '@typseo/ui/ai';
 import {
   ArrowUpRight,
   Check,
   ChevronRight,
   CircleAlert,
-  Clipboard,
   Info,
   RefreshCw,
   Search,
   Sparkles,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,6 +30,7 @@ interface SeoPanelProps {
   analysis: SeoAnalysis;
   snapshot: SeoDocument;
   selectedText: string;
+  onAcceptAiSuggestion: (original: string, replacement: string) => boolean;
   onUpdateDocument: (patch: Partial<PlaygroundDocument>) => void;
   onRefresh: () => void;
   onFocusField: (field: string) => void;
@@ -386,26 +388,66 @@ function ContentBrief({
 function AssistantPanel({
   document,
   selectedText,
-}: Pick<SeoPanelProps, 'document' | 'selectedText'>) {
-  const [task, setTask] = useState<'clarity' | 'shorten' | 'seo'>('clarity');
-  const [copied, setCopied] = useState(false);
-  const prompt = useMemo(() => {
-    const instruction =
-      task === 'clarity'
-        ? 'Improve clarity while preserving the original meaning and tone.'
-        : task === 'shorten'
-          ? 'Shorten the passage without losing its key facts.'
-          : `Suggest natural ways to improve relevance for the focus keyword "${document.focusKeyword || 'not set'}" without keyword stuffing.`;
-    return `${instruction}\n\nArticle title: ${document.title || 'Untitled'}\nFocus keyword: ${document.focusKeyword || 'Not set'}\n\nPassage:\n${selectedText || 'Select text in the editor, then open AI Assistant to include it here.'}`;
-  }, [document.title, document.focusKeyword, selectedText, task]);
-  async function copyPrompt() {
+  onAcceptAiSuggestion,
+}: Pick<SeoPanelProps, 'document' | 'selectedText' | 'onAcceptAiSuggestion'>) {
+  const [task, setTask] = useState<AiCommand>('clarity');
+  const [instruction, setInstruction] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [suggestion, setSuggestion] = useState<{
+    original: string;
+    replacement: string;
+    documentId: string;
+  } | null>(null);
+
+  async function generate(command: AiCommand) {
+    if (!selectedText.trim() || busy) return;
+    setBusy(true);
+    setError('');
+    setSuggestion(null);
     try {
-      await navigator.clipboard.writeText(prompt);
-      setCopied(true);
+      const response = await fetch('/api/ai/edit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          command,
+          text: selectedText,
+          ...(command === 'custom' ? { instruction } : {}),
+          context: {
+            title: document.title,
+            focusKeyword: document.focusKeyword,
+          },
+        }),
+      });
+      if (!response.ok) {
+        setError(
+          response.status === 503
+            ? 'AI demo is disabled. Configure the local server to enable it.'
+            : 'Could not generate a suggestion. Try again.',
+        );
+        return;
+      }
+      const result: AiEditResult = await response.json();
+      if (typeof result.replacement !== 'string' || !result.replacement.trim())
+        throw new Error('Invalid AI response.');
+      setSuggestion({
+        original: selectedText,
+        replacement: result.replacement,
+        documentId: document.id,
+      });
     } catch {
-      setCopied(false);
+      setError('Could not generate a suggestion. Check your connection.');
+    } finally {
+      setBusy(false);
     }
   }
+
+  const currentSuggestion =
+    suggestion?.documentId === document.id &&
+    suggestion.original === selectedText
+      ? suggestion
+      : null;
+
   return (
     <div className="panel-stack assistant-panel">
       <div className="assistant-icon">
@@ -413,40 +455,62 @@ function AssistantPanel({
       </div>
       <h2>AI Assistant</h2>
       <p>
-        Prepare a prompt from your document or selected text. No AI provider is
-        connected in this local playground; nothing is sent to a server.
+        Select a passage, generate a revision, then review it before applying.
+        Nothing changes in the editor until you accept.
       </p>
-      <div className="assistant-tasks" role="group" aria-label="Writing task">
-        {(
-          [
-            ['clarity', 'Improve clarity'],
-            ['shorten', 'Shorten'],
-            ['seo', 'SEO ideas'],
-          ] as const
-        ).map(([value, label]) => (
-          <Button
-            key={value}
-            size="sm"
-            variant={task === value ? 'secondary' : 'outline'}
-            aria-pressed={task === value}
-            onClick={() => {
-              setTask(value);
-              setCopied(false);
-            }}
-          >
-            {label}
-          </Button>
-        ))}
-      </div>
-      <label htmlFor="assistant-prompt">Generated prompt</label>
-      <Textarea id="assistant-prompt" readOnly value={prompt} rows={10} />
-      <Button onClick={copyPrompt}>
-        <Clipboard className="size-4" />
-        {copied ? 'Copied' : 'Copy prompt'}
+      <p className="brief-footnote">
+        If this local demo is enabled, the selected passage and its title and
+        keyword context are sent to your configured provider.
+      </p>
+      <AICommandMenu
+        className="assistant-tasks"
+        value={task}
+        disabled={busy || !selectedText.trim()}
+        onChange={setTask}
+      />
+      <Button
+        disabled={busy || !selectedText.trim()}
+        onClick={() => generate(task)}
+      >
+        {busy ? 'Generating…' : 'Generate suggestion'}
       </Button>
+      <AIChatPanel
+        className="assistant-custom"
+        value={instruction}
+        onChange={setInstruction}
+        onSubmit={() => generate('custom')}
+        disabled={!selectedText.trim()}
+        busy={busy}
+      />
+      {error && (
+        <p role="alert" className="assistant-error">
+          {error}
+        </p>
+      )}
+      {currentSuggestion && (
+        <AIChangesPreview
+          className="assistant-preview"
+          original={currentSuggestion.original}
+          replacement={currentSuggestion.replacement}
+          onReject={() => setSuggestion(null)}
+          onAccept={() => {
+            if (
+              onAcceptAiSuggestion(
+                currentSuggestion.original,
+                currentSuggestion.replacement,
+              )
+            )
+              setSuggestion(null);
+            else
+              setError(
+                'The passage changed. Select it again before generating a new suggestion.',
+              );
+          }}
+        />
+      )}
       {!selectedText && (
         <p className="brief-footnote">
-          Tip: select a passage in the editor before opening this tab.
+          Select text in the editor, then open AI Assistant to include it here.
         </p>
       )}
     </div>
@@ -528,6 +592,7 @@ export function SeoPanel(props: SeoPanelProps) {
             <AssistantPanel
               document={props.document}
               selectedText={props.selectedText}
+              onAcceptAiSuggestion={props.onAcceptAiSuggestion}
             />
           </TabsContent>
           <TabsContent value="outline">
