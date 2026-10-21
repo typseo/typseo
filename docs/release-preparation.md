@@ -4,7 +4,7 @@ This is a preparation checklist, not authorization to publish. All seven `@typse
 
 ## Current automated gate
 
-Run `pnpm install --frozen-lockfile` and `pnpm release:check` from the repository root. The command builds the workspace and uses `npm pack --dry-run --json --ignore-scripts` for each package. It verifies that the README, MIT license text, package manifest, and every declared JS/type export are actually in the prospective tarball; it rejects agent-control and environment files. CI runs the artifact check after its production build. This is a dry run: it neither creates tarballs nor sends content to npm.
+Run `pnpm install --frozen-lockfile` and `pnpm release:check` from the repository root. The command builds the workspace and uses `npm pack --dry-run --json --ignore-scripts` for each package. It verifies that the README, MIT license text, package manifest, and every declared JS/type export are actually in the prospective tarball; it rejects agent-control and environment files. A second check uses `pnpm pack` to create local tarballs, verifies that packed dependency ranges no longer contain `workspace:`, installs all seven tarballs into a temporary consumer outside the workspace, and imports every public entrypoint. CI runs both checks after its production build. Neither check sends content to npm, and the temporary consumer and tarballs are removed afterward.
 
 The packages have explicit ESM exports and declaration paths. `@typseo/ahrefs` and `@typseo/gsc` export only `./server`. The CI boundary script keeps every package private and enforces those paths until a separate reviewed release change deliberately updates that policy.
 
@@ -19,7 +19,7 @@ The packages have explicit ESM exports and declaration paths. `@typseo/ahrefs` a
 ## Findings on 2026-10-21
 
 - After the Changesets 3 and Vite 8 upgrades, `pnpm audit --prod` reports no known vulnerabilities. The full audit reports one high-severity `braces` advisory through the development-only `eslint-config-next` → `@next/eslint-plugin-next` → `fast-glob` → `micromatch` path; the audit lists no patched version. Recheck before release and avoid untrusted glob patterns in development tooling.
-- `pnpm release:check` passes for all seven packages on a frozen install. This verifies prospective tarball contents only; it does not prove that a fresh consumer can install every package.
+- `pnpm release:check` passes for all seven packages on a frozen install. The packed-consumer smoke test verifies local installation and module imports; full consumer build and type-compatibility tests remain separate release gates.
 - The React/Vite example builds with Vite 8, but its main JavaScript chunk is about 627 kB minified (197 kB gzip). Rolldown warns that React Server Component `use client` directives may not be preserved when bundling; those directives have no client-side meaning in Vite. Measure the consumer bundle and typing latency before claiming performance targets.
 - The latest GitHub Actions run passed and emitted an `ubuntu-latest` image migration notice. Recheck the runner image and release workflow compatibility before publishing.
 
