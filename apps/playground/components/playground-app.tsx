@@ -22,7 +22,7 @@ import {
   Sun,
   X,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -33,15 +33,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { PlaygroundToolbar } from '@/components/playground-toolbar';
 import { SeoPanel, type PanelTab } from '@/components/seo-panel';
-import {
-  makeNewDocument,
-  sampleDocument,
-  slugify,
-  type PlaygroundDocument,
-} from '@/lib/documents';
 import { analyzeEditorDocument, countWords } from '@/lib/seo';
+import { useDocumentWorkspace } from '@/lib/use-document-workspace';
 
-const storageKey = 'typseo-playground-documents-v1';
 const themeKey = 'typseo-playground-theme';
 const editorExtensions = [Image];
 const editorProps = {
@@ -51,23 +45,6 @@ const emptyJson: JSONContent = {
   type: 'doc',
   content: [{ type: 'paragraph' }],
 };
-
-function safeDocuments(value: unknown): PlaygroundDocument[] | null {
-  if (!Array.isArray(value)) return null;
-  const valid = value.filter(
-    (item): item is PlaygroundDocument =>
-      item &&
-      typeof item === 'object' &&
-      typeof item.id === 'string' &&
-      typeof item.title === 'string' &&
-      typeof item.metaDescription === 'string' &&
-      typeof item.focusKeyword === 'string' &&
-      typeof item.slug === 'string' &&
-      typeof item.html === 'string' &&
-      typeof item.updatedAt === 'number',
-  );
-  return valid.length ? valid : null;
-}
 
 function escapeHtml(value: string) {
   return value.replace(
@@ -89,58 +66,38 @@ function downloadFile(filename: string, content: string, type: string) {
 }
 
 export function PlaygroundApp() {
-  const [documents, setDocuments] = useState<PlaygroundDocument[]>([
-    sampleDocument,
-  ]);
-  const [activeId, setActiveId] = useState(sampleDocument.id);
-  const [storageReady, setStorageReady] = useState(false);
+  const {
+    documents,
+    activeId,
+    activeDocument,
+    saveState,
+    scheduleBodySave,
+    selectDocument,
+    createDocument: createWorkspaceDocument,
+    updateDocument,
+  } = useDocumentWorkspace();
   const [search, setSearch] = useState('');
   const [panelTab, setPanelTab] = useState<PanelTab>('analysis');
   const [showAnalysisMobile, setShowAnalysisMobile] = useState(false);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [preview, setPreview] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [saveState, setSaveState] = useState<'saved' | 'editing'>('saved');
+  const [themeReady, setThemeReady] = useState(false);
   const [editorJson, setEditorJson] = useState<JSONContent>(emptyJson);
   const [selectedText, setSelectedText] = useState('');
-  const pendingHtml = useRef<string | null>(null);
-  const pendingId = useRef<string | null>(null);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-
-  const activeDocument =
-    documents.find((item) => item.id === activeId) ??
-    documents[0] ??
-    sampleDocument;
 
   useEffect(() => {
     let cancelled = false;
     queueMicrotask(() => {
       if (cancelled) return;
       try {
-        const stored = localStorage.getItem(storageKey);
-        if (stored) {
-          const parsed = JSON.parse(stored) as {
-            documents?: unknown;
-            activeId?: unknown;
-          };
-          const restored = safeDocuments(parsed.documents);
-          if (restored) {
-            setDocuments(restored);
-            setActiveId(
-              typeof parsed.activeId === 'string' &&
-                restored.some((item) => item.id === parsed.activeId)
-                ? parsed.activeId
-                : restored[0]!.id,
-            );
-          }
-        }
         if (localStorage.getItem(themeKey) === 'dark') setTheme('dark');
       } catch {
-        /* Storage may be unavailable; the playground still works in memory. */
+        /* Theme still works for this session. */
       }
-      setStorageReady(true);
+      setThemeReady(true);
     });
     return () => {
       cancelled = true;
@@ -148,22 +105,14 @@ export function PlaygroundApp() {
   }, []);
 
   useEffect(() => {
-    if (!storageReady) return;
-    try {
-      localStorage.setItem(storageKey, JSON.stringify({ documents, activeId }));
-    } catch {
-      /* In-memory editing remains available. */
-    }
-  }, [documents, activeId, storageReady]);
-
-  useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
+    if (!themeReady) return;
     try {
       localStorage.setItem(themeKey, theme);
     } catch {
       /* Theme still works for this session. */
     }
-  }, [theme]);
+  }, [theme, themeReady]);
 
   useEffect(() => {
     function handleSearchShortcut(event: KeyboardEvent) {
@@ -176,35 +125,14 @@ export function PlaygroundApp() {
     return () => window.removeEventListener('keydown', handleSearchShortcut);
   }, []);
 
-  const commitPending = useCallback(() => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    if (pendingHtml.current !== null && pendingId.current) {
-      const html = pendingHtml.current;
-      const id = pendingId.current;
-      setDocuments((current) =>
-        current.map((item) =>
-          item.id === id ? { ...item, html, updatedAt: Date.now() } : item,
-        ),
-      );
-      pendingHtml.current = null;
-      pendingId.current = null;
-    }
-    setSaveState('saved');
-  }, []);
-
   const editor = useTypseoEditor({
     value: activeDocument.html,
     extensions: editorExtensions,
     editable: !preview,
     onChange: (html, currentEditor) => {
-      pendingHtml.current = html;
-      pendingId.current = activeId;
-      setSaveState('editing');
-      if (saveTimer.current) clearTimeout(saveTimer.current);
-      saveTimer.current = setTimeout(() => {
-        setEditorJson(currentEditor.getJSON());
-        commitPending();
-      }, 350);
+      scheduleBodySave(activeId, html, () =>
+        setEditorJson(currentEditor.getJSON()),
+      );
     },
     editorProps,
   });
@@ -243,37 +171,18 @@ export function PlaygroundApp() {
       setShowSidebarMobile(false);
       return;
     }
-    commitPending();
-    setActiveId(id);
+    selectDocument(id);
     setPreview(false);
     setShowSidebarMobile(false);
     setShowAnalysisMobile(false);
   }
 
   function createDocument() {
-    commitPending();
-    const created = makeNewDocument();
-    setDocuments((current) => [created, ...current]);
-    setActiveId(created.id);
+    createWorkspaceDocument();
     setPreview(false);
     setShowSidebarMobile(false);
     setShowAnalysisMobile(false);
     window.setTimeout(() => titleRef.current?.focus(), 0);
-  }
-
-  function updateDocument(patch: Partial<PlaygroundDocument>) {
-    setDocuments((current) =>
-      current.map((item) => {
-        if (item.id !== activeId) return item;
-        const next = { ...item, ...patch, updatedAt: Date.now() };
-        if (
-          patch.title !== undefined &&
-          (!item.slug || item.slug === slugify(item.title))
-        )
-          next.slug = slugify(patch.title);
-        return next;
-      }),
-    );
   }
 
   function openPanel(tab: PanelTab) {

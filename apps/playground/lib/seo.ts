@@ -7,14 +7,24 @@ export interface DocumentMetadata {
   focusKeyword: string;
 }
 
+const blockContainers = new Set([
+  'doc',
+  'bulletList',
+  'orderedList',
+  'listItem',
+  'blockquote',
+  'table',
+  'tableRow',
+  'tableCell',
+  'tableHeader',
+]);
+
 export function textFromNode(node: JSONContent): string {
   if (node.type === 'text') return node.text ?? '';
   if (node.type === 'hardBreak') return '\n';
   const parts = (node.content ?? []).map(textFromNode);
-  return ['doc', 'bulletList', 'orderedList', 'listItem'].includes(
-    node.type ?? '',
-  )
-    ? parts.join('\n')
+  return blockContainers.has(node.type ?? '')
+    ? parts.filter(Boolean).join('\n')
     : parts.join('');
 }
 
@@ -49,7 +59,9 @@ export function toSeoDocument(
     title: metadata.title,
     metaDescription: metadata.metaDescription,
     focusKeyword: metadata.focusKeyword,
-    bodyText: textFromNode(content),
+    bodyText: [metadata.title.trim(), textFromNode(content)]
+      .filter(Boolean)
+      .join('\n'),
     headings: metadata.title.trim()
       ? [{ level: 1, text: metadata.title }, ...headings]
       : headings,
