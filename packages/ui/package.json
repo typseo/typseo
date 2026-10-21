@@ -2,6 +2,7 @@
   "name": "@typseo/ui",
   "version": "0.0.0",
   "private": true,
+  "exports": {},
   "description": "Optional UI components, planned for M2 and M3",
   "sideEffects": false
 }

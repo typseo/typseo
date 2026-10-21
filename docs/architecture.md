@@ -1,6 +1,6 @@
 # Architecture boundaries
 
-Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages are independently installable. M0 creates package manifests only; they are private, have no public exports, and contain no product APIs.
+Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 creates package manifests only; they are private, explicitly export nothing, and contain no product APIs or build targets. Source, per-package TypeScript/build configuration, and public exports are added in the respective milestones.
 
 | Package          | Planned responsibility                              | Earliest milestone |
 | ---------------- | --------------------------------------------------- | ------------------ |

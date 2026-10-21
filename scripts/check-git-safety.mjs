@@ -49,11 +49,39 @@ export function hasLikelySecret(text) {
 }
 
 function main(mode) {
-  if (!['--staged', '--tracked'].includes(mode)) {
+  if (!['--staged', '--tracked', '--history'].includes(mode)) {
     console.error(
-      'Usage: node scripts/check-git-safety.mjs --staged|--tracked',
+      'Usage: node scripts/check-git-safety.mjs --staged|--tracked|--history',
     );
     process.exitCode = 2;
+    return;
+  }
+  if (mode === '--history') {
+    const failures = [];
+    const objects = git(['rev-list', '--objects', '--all'])
+      .split('\n')
+      .filter(Boolean);
+    for (const object of objects) {
+      const id = object.slice(0, 40);
+      const path = object.slice(41);
+      if (!path || git(['cat-file', '-t', id]).trim() !== 'blob') continue;
+      if (isProhibitedPath(path)) {
+        failures.push(`${path}: prohibited path in history`);
+        continue;
+      }
+      const bytes = git(['cat-file', 'blob', id], 'buffer');
+      if (!bytes.includes(0) && hasLikelySecret(bytes.toString('utf8')))
+        failures.push(`${path}: possible secret in history`);
+    }
+    if (failures.length) {
+      console.error(
+        'Git safety check failed:\n' +
+          failures.map((item) => `- ${item}`).join('\n'),
+      );
+      process.exitCode = 1;
+      return;
+    }
+    console.log(`Git history safety check passed (${objects.length} objects).`);
     return;
   }
   const rawPaths =

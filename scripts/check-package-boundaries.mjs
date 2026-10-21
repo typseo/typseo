@@ -16,8 +16,14 @@ for (const entry of packages) {
   names.add(manifest.name);
   if (!manifest.private)
     failures.push(`${manifest.name}: M0 package must remain private`);
-  if (manifest.exports)
-    failures.push(`${manifest.name}: M0 package has premature public exports`);
+  if (
+    !manifest.exports ||
+    typeof manifest.exports !== 'object' ||
+    Object.keys(manifest.exports).length !== 0
+  )
+    failures.push(
+      `${manifest.name}: M0 package must explicitly export nothing`,
+    );
   if (manifest.name === '@typseo/core') {
     const deps = { ...manifest.dependencies, ...manifest.peerDependencies };
     if (

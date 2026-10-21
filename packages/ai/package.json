@@ -2,6 +2,7 @@
   "name": "@typseo/ai",
   "version": "0.0.0",
   "private": true,
+  "exports": {},
   "description": "AI integration, planned for M4",
   "sideEffects": false
 }
