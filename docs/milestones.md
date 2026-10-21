@@ -13,6 +13,16 @@ Acceptance criteria:
 - A staged-file checker is available through the pre-commit hook.
 - Work is committed on `feat/bootstrap-monorepo`; no push or merge is part of M0.
 
-## Next
+## M1 — SEO Core
 
-M1 implements the framework-independent SEO document model, scoring rules, issue types, and unit tests in `@typseo/core`. M2–M7 follow the product roadmap in the project brief; no M1 implementation belongs in M0.
+Acceptance criteria:
+
+- `@typseo/core` defines a framework-independent document snapshot, checks, issue types, and a deterministic weighted score.
+- Default rules cover titles, descriptions, body length, heading structure, informative-image alt text, and an optional focus keyword.
+- Skipped rules do not affect the score denominator; custom rules can replace the default set.
+- Unicode-aware phrase matching avoids substring false positives.
+- Unit tests cover passing, failing, skipped, custom, and non-mutating behavior.
+- The package builds to ESM with declaration files, and root test, typecheck, lint, format, boundary, and build checks pass.
+- Work stays on `feat/seo-core`; do not merge M0 or start M2 as part of this milestone.
+
+M2–M7 follow the product roadmap in the project brief. Editor adapters and React components belong in M2, not M1.

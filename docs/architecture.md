@@ -1,6 +1,6 @@
 # Architecture boundaries
 
-Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 creates package manifests only; they are private, explicitly export nothing, and contain no product APIs or build targets. Source, per-package TypeScript/build configuration, and public exports are added in the respective milestones.
+Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 created private package shells. M1 implements `@typseo/core` with a built public entry point while keeping it private until release approval. The remaining packages still explicitly export nothing and contain no product APIs or build targets.
 
 | Package          | Planned responsibility                              | Earliest milestone |
 | ---------------- | --------------------------------------------------- | ------------------ |
@@ -16,4 +16,4 @@ Dependency direction: `core` has no React, Tiptap, Next.js, provider SDK, or int
 
 The Next.js playground under `apps/playground` is a development host. It is not an SDK package and does not define production component behavior. Documentation site and examples are scheduled for M6.
 
-Performance targets (lazy loading, debounced SEO analysis, editor render isolation, SSR safety, and bundle budgets) must be measured when the corresponding feature exists. M0 makes no performance claim.
+The M1 engine analyzes a plain, editor-independent document snapshot synchronously. Future editor adapters must schedule or debounce analysis outside the keystroke hot path. Lazy loading, editor render isolation, SSR safety, and bundle budgets must be measured when the corresponding feature exists; M1 makes no bundle-performance claim.
