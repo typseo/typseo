@@ -4,7 +4,7 @@ Typseo is an open-source, embeddable rich-text editor and SEO toolkit for React 
 
 ## Requirements
 
-- Node.js 20.9 or newer
+- Node.js 22.11+ (22.x), 24.x, or 26+
 - pnpm 10.4.1
 
 ## Local development

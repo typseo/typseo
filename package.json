@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@10.4.1",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "^22.11.0 || ^24.0.0 || >=26.0.0"
   },
   "scripts": {
     "dev": "turbo dev --filter=@typseo/playground",
@@ -23,7 +23,7 @@
     "release:check": "pnpm build && node scripts/check-release-artifacts.mjs"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
+    "@changesets/cli": "^3.0.3",
     "@types/node": "^22.0.0",
     "prettier": "^3.9.10",
     "turbo": "^2.11.10",
