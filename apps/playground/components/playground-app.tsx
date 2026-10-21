@@ -435,6 +435,7 @@ export function PlaygroundApp() {
           </div>
           <div className="sidebar-bottom">
             <p>Open-source editor toolkit</p>
+            <a href="/seo-example">Next.js example ↗</a>
             <a
               href="https://github.com/typseo/typseo"
               target="_blank"

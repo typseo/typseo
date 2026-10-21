@@ -38,3 +38,14 @@ Acceptance criteria:
 - Hook tests cover content updates, controlled synchronization, custom extensions, and stable editor identity.
 - Root test, typecheck, lint, format, boundary, security, and build checks pass.
 - Work stays on `feat/editor-react-sdk`; M3 SEO UI and Next.js helpers are not part of this milestone.
+
+## M3 — SEO UI & Next.js
+
+Acceptance criteria:
+
+- `@typseo/ui/seo` exposes reusable, unstyled `SEOScore`, `SEOChecklist`, `SERPPreview`, and `SEOSidebar` components consuming real `@typseo/core` analysis and document data.
+- `@typseo/ui/metadata-editor` exposes controlled page metadata and focus-keyword inputs without storing host state.
+- `@typseo/next` creates App Router metadata and Article JSON-LD with validated absolute URLs and script-safe serialization.
+- The Playground has a real App Router example route using the package APIs without fabricated canonical URLs or schema fields.
+- Tests cover score rendering, checklist interaction, controlled metadata editing, metadata output, unsafe URLs, and JSON-LD serialization.
+- Root install, typecheck, lint, test, format, boundary, security, and build checks pass; AI and external integrations remain out of scope.
