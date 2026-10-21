@@ -2,7 +2,34 @@
   "name": "@typseo/ui",
   "version": "0.0.0",
   "private": true,
-  "exports": {},
-  "description": "Optional UI components, planned for M2 and M3",
-  "sideEffects": false
+  "type": "module",
+  "description": "Optional Typseo editor components",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noUnusedLocals --noUnusedParameters"
+  },
+  "dependencies": {
+    "@tiptap/react": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0",
+    "@typseo/react": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "react": "19.3.1"
+  }
 }

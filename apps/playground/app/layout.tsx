@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import './styles.css';
 
 export const metadata: Metadata = {
-  title: 'Typseo Playground',
-  description: 'M0 workspace playground for Typseo',
+  title: 'Typseo Playground — Editor & SEO Toolkit',
+  description: 'Explore the Typseo rich-text editor and live SEO analysis.',
 };
 
 export default function RootLayout({
@@ -11,7 +12,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
     </html>
   );
 }

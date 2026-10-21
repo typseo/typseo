@@ -1,6 +1,6 @@
 # Architecture boundaries
 
-Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 created private package shells. M1 implements `@typseo/core` with a built public entry point while keeping it private until release approval. The remaining packages still explicitly export nothing and contain no product APIs or build targets.
+Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 created private package shells. M1 implements `@typseo/core`; M2 adds `@typseo/react` and `@typseo/ui`. These three packages have built public entry points but remain private until release approval. The remaining packages still explicitly export nothing and contain no product APIs or build targets.
 
 | Package          | Planned responsibility                              | Earliest milestone |
 | ---------------- | --------------------------------------------------- | ------------------ |
@@ -16,4 +16,4 @@ Dependency direction: `core` has no React, Tiptap, Next.js, provider SDK, or int
 
 The Next.js playground under `apps/playground` is a development host. It is not an SDK package and does not define production component behavior. Documentation site and examples are scheduled for M6.
 
-The M1 engine analyzes a plain, editor-independent document snapshot synchronously. Future editor adapters must schedule or debounce analysis outside the keystroke hot path. Lazy loading, editor render isolation, SSR safety, and bundle budgets must be measured when the corresponding feature exists; M1 makes no bundle-performance claim.
+The M1 engine analyzes a plain, editor-independent document snapshot synchronously. The M2 editor does not run SEO analysis on transactions; future adapters must schedule or debounce it outside the keystroke hot path. The editor delays initialization until the client and opts out of transaction-driven React rerenders. These choices are not a substitute for bundle or typing-performance benchmarks, which remain future work. `@typseo/ui` supplies structure and controls but leaves visual styling to the host application.

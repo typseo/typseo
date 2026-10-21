@@ -2,7 +2,39 @@
   "name": "@typseo/react",
   "version": "0.0.0",
   "private": true,
-  "exports": {},
-  "description": "Headless React editor bindings, planned for M2",
-  "sideEffects": false
+  "type": "module",
+  "description": "Headless React bindings for the Typseo editor",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noUnusedLocals --noUnusedParameters"
+  },
+  "dependencies": {
+    "@tiptap/core": "3.32.0",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/react": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "16.3.3",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "jsdom": "30.1.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
 }

@@ -25,4 +25,16 @@ Acceptance criteria:
 - The package builds to ESM with declaration files, and root test, typecheck, lint, format, boundary, and build checks pass.
 - Work stays on `feat/seo-core`; do not merge M0 or start M2 as part of this milestone.
 
-M2–M7 follow the product roadmap in the project brief. Editor adapters and React components belong in M2, not M1.
+M3–M7 follow the product roadmap in the project brief. Editor adapters and React components belong in M2, not M1.
+
+## M2 — Tiptap & React SDK
+
+Acceptance criteria:
+
+- `@typseo/react` exposes a headless Tiptap v3 hook with controlled and uncontrolled HTML, change callbacks, editable state, and consumer extensions.
+- The hook avoids transaction-driven React rerenders and uses client-only editor initialization for SSR safety.
+- `@typseo/ui` exposes optional, unstyled `TypseoEditor` and `EditorToolbar` components with accessible formatting controls.
+- The Next.js playground exercises the editor without coupling SDK styling to the host app.
+- Hook tests cover content updates, controlled synchronization, custom extensions, and stable editor identity.
+- Root test, typecheck, lint, format, boundary, security, and build checks pass.
+- Work stays on `feat/editor-react-sdk`; M3 SEO UI and Next.js helpers are not part of this milestone.
