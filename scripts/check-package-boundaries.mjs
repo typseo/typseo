@@ -15,15 +15,25 @@ for (const entry of packages) {
     failures.push(`duplicate package name: ${manifest.name}`);
   names.add(manifest.name);
   if (!manifest.private)
-    failures.push(`${manifest.name}: M0 package must remain private`);
-  if (
+    failures.push(
+      `${manifest.name}: package must remain private before release`,
+    );
+  if (manifest.name === '@typseo/core') {
+    const rootExport = manifest.exports?.['.'];
+    if (
+      Object.keys(manifest.exports ?? {}).length !== 1 ||
+      rootExport?.types !== './dist/index.d.ts' ||
+      rootExport?.default !== './dist/index.js'
+    ) {
+      failures.push('core must expose only its built public entry point');
+    }
+  } else if (
     !manifest.exports ||
     typeof manifest.exports !== 'object' ||
     Object.keys(manifest.exports).length !== 0
-  )
-    failures.push(
-      `${manifest.name}: M0 package must explicitly export nothing`,
-    );
+  ) {
+    failures.push(`${manifest.name}: unfinished package must export nothing`);
+  }
   if (manifest.name === '@typseo/core') {
     const deps = { ...manifest.dependencies, ...manifest.peerDependencies };
     if (
