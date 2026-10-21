@@ -11,6 +11,7 @@ import {
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { betaVersion, isExpectedBetaManifest } from './release-policy.mjs';
 
 const repositoryRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageRoot = join(repositoryRoot, 'packages');
@@ -50,6 +51,9 @@ try {
     const packedManifest = JSON.parse(
       run('tar', ['-xOf', tarballPath, 'package/package.json'], cwd),
     );
+    if (!isExpectedBetaManifest(packedManifest)) {
+      throw new Error(`${manifest.name}: packed beta metadata is incorrect`);
+    }
     for (const dependencies of [
       packedManifest.dependencies,
       packedManifest.optionalDependencies,
@@ -59,6 +63,11 @@ try {
         if (range.startsWith('workspace:')) {
           throw new Error(
             `${manifest.name}: packed dependency ${name} still uses ${range}`,
+          );
+        }
+        if (name.startsWith('@typseo/') && range !== betaVersion) {
+          throw new Error(
+            `${manifest.name}: packed dependency ${name} must be ${betaVersion}, got ${range}`,
           );
         }
       }
