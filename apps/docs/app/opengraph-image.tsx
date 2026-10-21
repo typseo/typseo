@@ -1,9 +1,18 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
+export const alt = 'Typseo Docs: Own your content. Improve how it ships.';
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const fontsDirectory = join(process.cwd(), 'assets', 'fonts');
+  const [geistRegular, geistBold] = await Promise.all([
+    readFile(join(fontsDirectory, 'Geist-Regular.ttf')),
+    readFile(join(fontsDirectory, 'Geist-Bold.ttf')),
+  ]);
+
   return new ImageResponse(
     <div
       style={{
@@ -15,7 +24,7 @@ export default function OpenGraphImage() {
         padding: 72,
         background: '#f9f9f7',
         color: '#171a18',
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: 'Geist',
       }}
     >
       <div
@@ -57,20 +66,26 @@ export default function OpenGraphImage() {
         </span>
         <span
           style={{
-            maxWidth: 950,
-            fontSize: 76,
+            display: 'flex',
+            flexDirection: 'column',
+            fontSize: 72,
             fontWeight: 700,
-            letterSpacing: -4,
+            letterSpacing: -3,
             lineHeight: 1.08,
           }}
         >
-          Own your content.
-          <br />
-          Improve how it ships.
+          <span>Own your content.</span>
+          <span>Improve how it ships.</span>
         </span>
       </div>
       <div style={{ width: '100%', height: 1, background: '#d9ded9' }} />
     </div>,
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: 'Geist', data: geistRegular, weight: 400, style: 'normal' },
+        { name: 'Geist', data: geistBold, weight: 700, style: 'normal' },
+      ],
+    },
   );
 }
