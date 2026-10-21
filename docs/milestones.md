@@ -72,3 +72,13 @@ Acceptance criteria:
 - Only server entrypoints are exported; neither adapter enters the client import graph or requires the editor or core package.
 - Docs explain credentials, OAuth, costs, quotas, privacy, and host-owned production controls.
 - Root install, typecheck, lint, test, format, boundary, security, and build checks pass.
+
+## M6 — Documentation & Examples
+
+Acceptance criteria:
+
+- A standalone, responsive documentation site covers setup, editor integration, SEO snapshots, Next.js metadata, and runnable examples.
+- Next.js App Router, Next.js Pages Router, and React/Vite examples use workspace packages and build independently.
+- Examples distinguish server-rendered metadata from client-side editor state; they do not invent canonical URLs, production persistence, or structured-data provenance.
+- Root frozen install, typecheck, lint, test, format, boundary, security, and production build checks pass with the new apps included in the workspace.
+- Work is reviewed in a PR before merge. Package publication remains M7 work.
