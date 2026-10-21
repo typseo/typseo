@@ -1,0 +1,7 @@
+{
+  "name": "@typseo/react",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Headless React editor bindings, planned for M2",
+  "sideEffects": false
+}
