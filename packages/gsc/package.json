@@ -2,6 +2,12 @@
   "name": "@typseo/gsc",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typseo/typseo.git",
+    "directory": "packages/gsc"
+  },
   "type": "module",
   "description": "Optional server-side Google Search Console analytics adapter",
   "sideEffects": false,
@@ -15,7 +21,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-package-license.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "tsc -p tsconfig.json --noUnusedLocals --noUnusedParameters"
   }
