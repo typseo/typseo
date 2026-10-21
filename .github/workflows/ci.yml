@@ -29,3 +29,4 @@ jobs:
       - run: pnpm test
       - run: pnpm build
       - run: node scripts/check-release-artifacts.mjs
+      - run: node scripts/check-packed-consumer.mjs
