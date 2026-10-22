@@ -1,6 +1,6 @@
 # Optional external integrations (M5)
 
-M5 adds two independent server-only adapters. They do not run in the Playground by default and are not part of an editor or browser bundle. Both packages remain private until release approval. No live provider request is made during repository tests.
+M5 adds two independent server-only adapters. They do not run in the Playground by default and are not part of an editor or browser bundle. Both packages are available as public betas on npm. No live provider request is made during repository tests.
 
 ## Ahrefs keyword overview
 

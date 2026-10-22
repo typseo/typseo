@@ -19,6 +19,7 @@
     "security:tracked": "node scripts/check-git-safety.mjs --tracked",
     "security:history": "node scripts/check-git-safety.mjs --history",
     "changeset": "changeset",
+    "release:version": "changeset version && pnpm install --lockfile-only --ignore-scripts",
     "boundaries": "node scripts/check-package-boundaries.mjs",
     "release:check": "pnpm build && node scripts/check-release-artifacts.mjs && node scripts/check-packed-consumer.mjs"
   },

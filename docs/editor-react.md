@@ -1,6 +1,6 @@
 # Editor & React SDK (M2)
 
-`@typseo/react` is a headless Tiptap v3 adapter. `@typseo/ui` is optional: it provides an editor shell and accessible toolbar, but no CSS. Both packages remain private while the project is under development.
+`@typseo/react` is a headless Tiptap v3 adapter. `@typseo/ui` is optional: it provides an editor shell and accessible toolbar, but no CSS. Both packages are available as public betas on npm.
 
 ## Hook
 

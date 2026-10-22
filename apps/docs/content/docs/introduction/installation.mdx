@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Prerequisites and workspace setup before the first public package release.
+description: Install the public beta packages or run the workspace locally.
 ---
 
 ## Prerequisites
@@ -9,10 +9,20 @@ description: Prerequisites and workspace setup before the first public package r
 - pnpm **10.4.1**, as pinned by the root `packageManager` field.
 - Git and a modern browser.
 
-<Callout type="warning" title="Not published to npm">
-  All Typseo packages are currently private. Use the monorepo; `pnpm add
-  @typseo/core` from the public registry is not a supported step yet.
+<Callout type="info" title="Public beta">
+  All seven packages are published at `0.1.0-beta.0`. Pin the beta version while
+  evaluating the API; it is not a stable release.
 </Callout>
+
+For an existing application, install only the packages it needs:
+
+```bash
+pnpm add @typseo/core@0.1.0-beta.0
+```
+
+Use `@typseo/react` for the Tiptap editor, `@typseo/ui` for optional components,
+and `@typseo/next` for Next.js metadata helpers. The AI, Ahrefs, and GSC adapters
+are optional and server-only where documented.
 
 <Steps>
   <Step>

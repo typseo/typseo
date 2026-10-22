@@ -1,6 +1,6 @@
 # Optional AI editing (M4)
 
-`@typseo/ai` validates bounded edit requests and defines a provider-agnostic `AiProvider` contract. Its `@typseo/ai/server` subpath contains an HTTPS OpenAI-compatible chat-completions adapter. Import that subpath **only in trusted server code**; never pass a provider API key to React components or use a `NEXT_PUBLIC_` variable for it. The package remains private until release approval.
+`@typseo/ai` validates bounded edit requests and defines a provider-agnostic `AiProvider` contract. Its `@typseo/ai/server` subpath contains an HTTPS OpenAI-compatible chat-completions adapter. Import that subpath **only in trusted server code**; never pass a provider API key to React components or use a `NEXT_PUBLIC_` variable for it. The package is published as a beta on npm.
 
 The UI components in `@typseo/ui/ai` are controlled and unstyled: `AICommandMenu`, `AIChatPanel` (a custom-instruction input), and `AIChangesPreview`. The host owns generation, loading/error state, and the editor change. The returned text is a proposal, not trusted HTML. Review before applying it.
 

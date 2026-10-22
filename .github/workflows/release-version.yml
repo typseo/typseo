@@ -1,0 +1,57 @@
+name: Prepare npm release PR
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.changeset/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: release-version-main
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  version:
+    if: github.repository == 'typseo/typseo' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.4.1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Check for pending changesets
+        id: pending
+        run: |
+          if find .changeset -maxdepth 1 -type f -name '*.md' ! -name 'README.md' | grep -q .; then
+            echo 'found=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Create or update version PR
+        id: version
+        if: steps.pending.outputs.found == 'true'
+        uses: changesets/action/version@v2.1.2
+        with:
+          script: pnpm release:version
+          commit-message: 'chore(release): version beta packages'
+          pr-title: 'chore(release): version beta packages'
+      # PRs created with GITHUB_TOKEN do not trigger pull_request workflows.
+      - name: Run CI on the version PR
+        if: steps.version.outputs.pr-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.version.outputs.pr-number }}
+        run: |
+          head_ref=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq .head.ref)
+          gh workflow run ci.yml --ref "$head_ref"

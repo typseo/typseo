@@ -1,6 +1,6 @@
 # Architecture boundaries
 
-Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. Packages will be independently installable when implemented. M0 created private package shells. M1 implements `@typseo/core`; M2 adds `@typseo/react` and editor components in `@typseo/ui`; M3 adds reusable SEO UI and `@typseo/next`; M4 adds opt-in AI editing; M5 adds optional server-side Ahrefs and Search Console adapters. All seven packages remain private until release approval.
+Typseo is a library suite intended for existing React, Next.js App Router, Next.js Pages Router, and React/Vite applications. M0 created package shells. M1 implements `@typseo/core`; M2 adds `@typseo/react` and editor components in `@typseo/ui`; M3 adds reusable SEO UI and `@typseo/next`; M4 adds opt-in AI editing; M5 adds optional server-side Ahrefs and Search Console adapters. All seven packages are independently installable from npm as a public beta.
 
 | Package          | Planned responsibility                              | Earliest milestone |
 | ---------------- | --------------------------------------------------- | ------------------ |

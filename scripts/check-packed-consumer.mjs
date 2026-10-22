@@ -11,7 +11,8 @@ import {
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { betaVersion, isExpectedBetaManifest } from './release-policy.mjs';
+import { isExpectedBetaManifest } from './release-policy.mjs';
+import { checkPackedDependencies } from './release-plan.mjs';
 
 const repositoryRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageRoot = join(repositoryRoot, 'packages');
@@ -19,6 +20,11 @@ const packageDirectories = readdirSync(packageRoot, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
+const packageManifests = packageDirectories.map((directory) => {
+  return JSON.parse(
+    readFileSync(join(packageRoot, directory, 'package.json'), 'utf8'),
+  );
+});
 const temporaryRoot = mkdtempSync(join(tmpdir(), 'typseo-packed-consumer-'));
 const tarballDirectory = join(temporaryRoot, 'tarballs');
 const consumerDirectory = join(temporaryRoot, 'consumer');
@@ -54,24 +60,7 @@ try {
     if (!isExpectedBetaManifest(packedManifest)) {
       throw new Error(`${manifest.name}: packed beta metadata is incorrect`);
     }
-    for (const dependencies of [
-      packedManifest.dependencies,
-      packedManifest.optionalDependencies,
-      packedManifest.peerDependencies,
-    ]) {
-      for (const [name, range] of Object.entries(dependencies ?? {})) {
-        if (range.startsWith('workspace:')) {
-          throw new Error(
-            `${manifest.name}: packed dependency ${name} still uses ${range}`,
-          );
-        }
-        if (name.startsWith('@typseo/') && range !== betaVersion) {
-          throw new Error(
-            `${manifest.name}: packed dependency ${name} must be ${betaVersion}, got ${range}`,
-          );
-        }
-      }
-    }
+    checkPackedDependencies(packedManifest, packageManifests);
     localPackages[manifest.name] = `file:../tarballs/${filename}`;
   }
 

@@ -1,6 +1,6 @@
 # SEO Core (M1)
 
-`@typseo/core` evaluates a plain snapshot of a page. It has no React, Tiptap, Next.js, network, or provider-SDK dependency. The package remains private while the API is developed; it is not published to npm.
+`@typseo/core` evaluates a plain snapshot of a page. It has no React, Tiptap, Next.js, network, or provider-SDK dependency. The package is available as a public beta on npm.
 
 ```ts
 import { analyzeSeoDocument } from '@typseo/core';
