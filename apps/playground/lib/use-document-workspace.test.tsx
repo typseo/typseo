@@ -1,12 +1,22 @@
 // @vitest-environment jsdom
 
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
+import { generateHTML } from '@tiptap/core';
+import Image from '@tiptap/extension-image';
+import { createTypseoPreset } from '@typseo/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { sampleDocument } from './documents';
+import { toSeoDocument } from './seo';
 import {
   documentStorageKey,
+  legacyDocumentStorageKey,
   useDocumentWorkspace,
 } from './use-document-workspace';
+
+const body = (text: string) => ({
+  type: 'doc',
+  content: [{ type: 'paragraph', content: [{ type: 'text', text }] }],
+});
 
 beforeEach(() => {
   localStorage.clear();
@@ -32,7 +42,7 @@ describe('Playground document workspace', () => {
     act(() =>
       first.result.current.scheduleBodySave(
         'new-document-id',
-        '<p>Unsaved second body</p>',
+        body('Unsaved second body'),
       ),
     );
     expect(first.result.current.saveState).toBe('editing');
@@ -47,7 +57,7 @@ describe('Playground document workspace', () => {
     ).toMatchObject({
       title: 'Second draft',
       slug: 'second-draft',
-      html: '<p>Unsaved second body</p>',
+      content: body('Unsaved second body'),
     });
 
     await waitFor(() => {
@@ -55,7 +65,7 @@ describe('Playground document workspace', () => {
         localStorage.getItem(documentStorageKey) ?? '{}',
       );
       expect(stored.activeId).toBe(sampleDocument.id);
-      expect(stored.documents[0].html).toBe('<p>Unsaved second body</p>');
+      expect(stored.documents[0].content).toEqual(body('Unsaved second body'));
     });
     first.unmount();
 
@@ -65,8 +75,8 @@ describe('Playground document workspace', () => {
     );
     expect(restored.result.current.activeId).toBe(sampleDocument.id);
     act(() => restored.result.current.selectDocument('new-document-id'));
-    expect(restored.result.current.activeDocument.html).toBe(
-      '<p>Unsaved second body</p>',
+    expect(restored.result.current.activeDocument.content).toEqual(
+      body('Unsaved second body'),
     );
   });
 
@@ -78,12 +88,12 @@ describe('Playground document workspace', () => {
     act(() =>
       result.current.scheduleBodySave(
         sampleDocument.id,
-        '<p>Latest keystrokes</p>',
+        body('Latest keystrokes'),
       ),
     );
     act(() => window.dispatchEvent(new Event('pagehide')));
     const stored = JSON.parse(localStorage.getItem(documentStorageKey) ?? '{}');
-    expect(stored.documents[0].html).toBe('<p>Latest keystrokes</p>');
+    expect(stored.documents[0].content).toEqual(body('Latest keystrokes'));
   });
 
   it('ignores invalid stored documents and keeps the sample available', async () => {
@@ -92,9 +102,83 @@ describe('Playground document workspace', () => {
       JSON.stringify({ documents: [{ id: 'broken' }], activeId: 'broken' }),
     );
     const { result } = renderHook(() => useDocumentWorkspace());
-    await waitFor(() =>
-      expect(result.current.activeDocument.id).toBe(sampleDocument.id),
-    );
+    await waitFor(() => expect(result.current.storageError).not.toBeNull());
+    expect(result.current.activeDocument.id).toBe(sampleDocument.id);
     expect(result.current.documents).toEqual([sampleDocument]);
+    expect(result.current.storageError).toMatch(/could not be loaded/);
+  });
+
+  it('migrates legacy HTML once and keeps the v1 backup untouched', async () => {
+    const legacy = {
+      documents: [
+        {
+          id: 'legacy',
+          title: 'Old draft',
+          metaDescription: '',
+          focusKeyword: '',
+          slug: 'old-draft',
+          updatedAt: 42,
+          html: '<h2>Heading</h2><p>Linked <a href="https://example.com">text</a></p><ul><li><p>Item</p></li></ul><p><img src="https://example.com/a.png" alt="Chart"></p>',
+        },
+      ],
+      activeId: 'legacy',
+    };
+    const backup = JSON.stringify(legacy);
+    localStorage.setItem(legacyDocumentStorageKey, backup);
+    const first = renderHook(() => useDocumentWorkspace());
+    await waitFor(() => expect(first.result.current.activeId).toBe('legacy'));
+    expect(first.result.current.activeDocument.content.type).toBe('doc');
+    const migratedContent = first.result.current.activeDocument.content;
+    const html = generateHTML(
+      migratedContent,
+      createTypseoPreset({ extensions: [Image] }),
+    );
+    expect(html).toContain('<h2>Heading</h2>');
+    expect(html).toContain('href="https://example.com"');
+    expect(html).toContain('<ul>');
+    expect(html).toContain('src="https://example.com/a.png"');
+    const snapshot = toSeoDocument(
+      { title: 'Old draft', metaDescription: '', focusKeyword: '' },
+      migratedContent,
+    );
+    expect(snapshot.headings).toEqual([
+      { level: 1, text: 'Old draft' },
+      { level: 2, text: 'Heading' },
+    ]);
+    expect(snapshot.bodyText).toContain('Linked text');
+    expect(snapshot.images).toEqual([{ alt: 'Chart' }]);
+    expect(first.result.current.storageError).toBeNull();
+    expect(localStorage.getItem(legacyDocumentStorageKey)).toBe(backup);
+    first.unmount();
+    const restored = renderHook(() => useDocumentWorkspace());
+    await waitFor(() =>
+      expect(restored.result.current.activeId).toBe('legacy'),
+    );
+    expect(restored.result.current.activeDocument.content).toEqual(
+      first.result.current.activeDocument.content,
+    );
+  });
+
+  it('does not overwrite legacy data when migration would discard unsupported content', async () => {
+    const legacy = {
+      documents: [
+        {
+          id: 'legacy',
+          title: 'Old draft',
+          metaDescription: '',
+          focusKeyword: '',
+          slug: '',
+          updatedAt: 1,
+          html: '<p>Keep this</p><script>do not execute this</script>',
+        },
+      ],
+      activeId: 'legacy',
+    };
+    const backup = JSON.stringify(legacy);
+    localStorage.setItem(legacyDocumentStorageKey, backup);
+    const { result } = renderHook(() => useDocumentWorkspace());
+    await waitFor(() => expect(result.current.storageError).not.toBeNull());
+    expect(localStorage.getItem(documentStorageKey)).toBeNull();
+    expect(localStorage.getItem(legacyDocumentStorageKey)).toBe(backup);
   });
 });

@@ -1,0 +1,25 @@
+---
+title: Document foundation
+description: Versioned JSON drafts and safe migration in the Typseo Playground.
+---
+
+The Playground now stores each draft as a versioned Tiptap JSON document (`schemaVersion: 2`). Page title and SEO fields remain separate from the editor content. HTML is generated only when exporting or when an existing HTML consumer uses the SDK callback.
+
+```ts
+type PlaygroundDocument = {
+  schemaVersion: 2;
+  id: string;
+  title: string;
+  metaDescription: string;
+  focusKeyword: string;
+  slug: string;
+  content: JSONContent;
+  updatedAt: number;
+};
+```
+
+On first load, the Playground reads `typseo-playground-documents-v1`, parses its HTML with the same StarterKit + Image schema used by the editor, and writes `typseo-playground-documents-v2`. It does not delete v1. Migration checks that text, link targets, and image sources survive; if they do not, it refuses to overwrite the old draft and offers a backup download. Unsupported formatting may still be normalized by Tiptap; inspect your converted draft before removing any browser data.
+
+Drafts stay in this browser and do not sync to a server. Clearing browser storage removes them. The JSON export contains the version and editor content; HTML export remains available for publishing. The SDK's old `value`, `defaultValue`, and `onChange` HTML props remain supported, while `document`, `defaultDocument`, and `onDocumentChange` support JSON integrations.
+
+This is the S0 foundation only. Advanced tables, formulas, layout, collaboration, DOCX, and hosted document storage are not included.

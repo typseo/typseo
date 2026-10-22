@@ -3,20 +3,24 @@ title: React API
 description: useTypseoEditor and its actual options from @typseo/react.
 ---
 
-`@typseo/react` exports `useTypseoEditor` and types `UseTypseoEditorOptions` and `TypseoEditorInstance`. The hook returns a Tiptap `Editor | null`.
+`@typseo/react` exports `useTypseoEditor`, `createTypseoPreset` and their option types. The hook returns a Tiptap `Editor | null`.
 
 ```ts
 interface UseTypseoEditorOptions {
   value?: string;
   defaultValue?: string;
   onChange?: (html: string, editor: Editor) => void;
+  document?: JSONContent;
+  defaultDocument?: JSONContent;
+  onDocumentChange?: (document: JSONContent, editor: Editor) => void;
   extensions?: AnyExtension[];
   starterKit?: boolean;
   editable?: boolean;
   editorProps?: EditorOptions['editorProps'];
+  instanceKey?: string;
 }
 ```
 
-Use either `value` or `defaultValue`. External controlled updates do not echo `onChange`. The instance is initially null until client initialization; `immediatelyRender` and transaction-driven React rerenders are disabled in the hook implementation.
+Use either `value` or `defaultValue` for HTML consumers, or `document` or `defaultDocument` for canonical Tiptap JSON. Do not mix controlled HTML and JSON props. External controlled updates do not echo either callback. Set `instanceKey` to a document ID when one component switches between independent drafts, so undo history cannot cross documents. `createTypseoPreset({ starterKit, extensions })` assembles StarterKit and optional extensions and rejects duplicate optional extension names. The instance is initially null until client initialization; `immediatelyRender` and transaction-driven React rerenders are disabled in the hook implementation.
 
 Source: [`packages/react/src/use-typseo-editor.ts`](https://github.com/typseo/typseo/blob/main/packages/react/src/use-typseo-editor.ts).

@@ -4,6 +4,7 @@
     "index",
     "tiptap-editor",
     "react-hooks",
+    "document-foundation",
     "toolbar",
     "extensions",
     "customization"

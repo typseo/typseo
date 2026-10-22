@@ -15,3 +15,5 @@ const editor = useTypseoEditor({ extensions });
 The placeholder extension is an example: install it in your host application if you use it. It is not included by Typseo. Configure default nodes and marks through StarterKit. If extension identities change after mount, Tiptap may recreate the editor; keep them stable while editing.
 
 Set `starterKit: false` only if your replacement extension set defines a complete schema.
+
+`createTypseoPreset({ extensions })` is the optional S0 preset builder. It rejects duplicate extension names, including names already supplied by StarterKit, so a schema collision fails early instead of silently changing parsing behavior. It does not add new editor features by itself.

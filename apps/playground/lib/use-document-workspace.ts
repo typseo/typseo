@@ -1,6 +1,8 @@
 'use client';
 
+import type { JSONContent } from '@tiptap/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { migrateLegacyWorkspace, parseWorkspace } from './document-migration';
 import {
   makeNewDocument,
   sampleDocument,
@@ -8,24 +10,8 @@ import {
   type PlaygroundDocument,
 } from './documents';
 
-export const documentStorageKey = 'typseo-playground-documents-v1';
-
-function safeDocuments(value: unknown): PlaygroundDocument[] | null {
-  if (!Array.isArray(value)) return null;
-  const valid = value.filter(
-    (item): item is PlaygroundDocument =>
-      item &&
-      typeof item === 'object' &&
-      typeof item.id === 'string' &&
-      typeof item.title === 'string' &&
-      typeof item.metaDescription === 'string' &&
-      typeof item.focusKeyword === 'string' &&
-      typeof item.slug === 'string' &&
-      typeof item.html === 'string' &&
-      typeof item.updatedAt === 'number',
-  );
-  return valid.length ? valid : null;
-}
+export const legacyDocumentStorageKey = 'typseo-playground-documents-v1';
+export const documentStorageKey = 'typseo-playground-documents-v2';
 
 export function useDocumentWorkspace() {
   const [documents, setDocuments] = useState<PlaygroundDocument[]>([
@@ -33,8 +19,9 @@ export function useDocumentWorkspace() {
   ]);
   const [activeId, setActiveId] = useState(sampleDocument.id);
   const [storageReady, setStorageReady] = useState(false);
+  const [storageError, setStorageError] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<'saved' | 'editing'>('saved');
-  const pendingHtml = useRef<string | null>(null);
+  const pendingContent = useRef<JSONContent | null>(null);
   const pendingId = useRef<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -50,23 +37,26 @@ export function useDocumentWorkspace() {
       try {
         const stored = localStorage.getItem(documentStorageKey);
         if (stored) {
-          const parsed = JSON.parse(stored) as {
-            documents?: unknown;
-            activeId?: unknown;
-          };
-          const restored = safeDocuments(parsed.documents);
-          if (restored) {
-            setDocuments(restored);
-            setActiveId(
-              typeof parsed.activeId === 'string' &&
-                restored.some((item) => item.id === parsed.activeId)
-                ? parsed.activeId
-                : restored[0]!.id,
+          const restored = parseWorkspace(JSON.parse(stored) as unknown);
+          if (!restored) throw new Error('Stored JSON documents are invalid');
+          setDocuments(restored.documents);
+          setActiveId(restored.activeId);
+        } else {
+          const legacy = localStorage.getItem(legacyDocumentStorageKey);
+          if (legacy) {
+            const migrated = migrateLegacyWorkspace(
+              JSON.parse(legacy) as unknown,
             );
+            // Commit the entire new workspace atomically; keep the v1 backup.
+            localStorage.setItem(documentStorageKey, JSON.stringify(migrated));
+            setDocuments(migrated.documents);
+            setActiveId(migrated.activeId);
           }
         }
       } catch {
-        /* Storage may be unavailable; editing still works in memory. */
+        setStorageError(
+          'Your stored drafts could not be loaded safely. The original data remains in this browser; export a backup before editing.',
+        );
       }
       setStorageReady(true);
     });
@@ -76,26 +66,34 @@ export function useDocumentWorkspace() {
   }, []);
 
   useEffect(() => {
-    if (!storageReady) return;
+    if (!storageReady || storageError) return;
+    let cancelled = false;
     try {
       localStorage.setItem(
         documentStorageKey,
         JSON.stringify({ documents, activeId }),
       );
     } catch {
-      /* In-memory editing remains available. */
+      queueMicrotask(() => {
+        if (!cancelled)
+          setStorageError(
+            'Local storage is unavailable. Changes are only kept until this tab closes.',
+          );
+      });
     }
-  }, [documents, activeId, storageReady]);
+    return () => {
+      cancelled = true;
+    };
+  }, [documents, activeId, storageReady, storageError]);
 
-  // A tab may close before the debounce fires. Persist the latest body then.
   useEffect(() => {
-    if (!storageReady) return;
+    if (!storageReady || storageError) return;
     function handlePageHide() {
-      const html = pendingHtml.current;
+      const content = pendingContent.current;
       const id = pendingId.current;
-      if (html === null || !id) return;
+      if (content === null || !id) return;
       const next = documents.map((item) =>
-        item.id === id ? { ...item, html, updatedAt: Date.now() } : item,
+        item.id === id ? { ...item, content, updatedAt: Date.now() } : item,
       );
       try {
         localStorage.setItem(
@@ -103,12 +101,12 @@ export function useDocumentWorkspace() {
           JSON.stringify({ documents: next, activeId }),
         );
       } catch {
-        /* In-memory editing remains available. */
+        /* The original v1 backup, if present, remains untouched. */
       }
     }
     window.addEventListener('pagehide', handlePageHide);
     return () => window.removeEventListener('pagehide', handlePageHide);
-  }, [documents, activeId, storageReady]);
+  }, [documents, activeId, storageReady, storageError]);
 
   useEffect(
     () => () => {
@@ -119,23 +117,23 @@ export function useDocumentWorkspace() {
 
   const commitPending = useCallback(() => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    if (pendingHtml.current !== null && pendingId.current) {
-      const html = pendingHtml.current;
+    if (pendingContent.current !== null && pendingId.current) {
+      const content = pendingContent.current;
       const id = pendingId.current;
       setDocuments((current) =>
         current.map((item) =>
-          item.id === id ? { ...item, html, updatedAt: Date.now() } : item,
+          item.id === id ? { ...item, content, updatedAt: Date.now() } : item,
         ),
       );
-      pendingHtml.current = null;
+      pendingContent.current = null;
       pendingId.current = null;
     }
     setSaveState('saved');
   }, []);
 
   const scheduleBodySave = useCallback(
-    (id: string, html: string, onSettled?: () => void) => {
-      pendingHtml.current = html;
+    (id: string, content: JSONContent, onSettled?: () => void) => {
+      pendingContent.current = content;
       pendingId.current = id;
       setSaveState('editing');
       if (saveTimer.current) clearTimeout(saveTimer.current);
@@ -164,7 +162,12 @@ export function useDocumentWorkspace() {
     setDocuments((current) =>
       current.map((item) => {
         if (item.id !== activeId) return item;
-        const next = { ...item, ...patch, updatedAt: Date.now() };
+        const next = {
+          ...item,
+          ...patch,
+          schemaVersion: 2 as const,
+          updatedAt: Date.now(),
+        };
         if (
           patch.title !== undefined &&
           (!item.slug || item.slug === slugify(item.title))
@@ -180,6 +183,7 @@ export function useDocumentWorkspace() {
     activeId,
     activeDocument,
     saveState,
+    storageError,
     scheduleBodySave,
     selectDocument,
     createDocument,
