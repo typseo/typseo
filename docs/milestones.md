@@ -1,5 +1,7 @@
 # Milestones
 
+M0–M7 record the path to the public beta. All seven packages have reached `0.1.0-beta.0`; this document keeps the original acceptance criteria for reference. See [release preparation](release-preparation.md) for the current version workflow and [dependency security](dependency-security.md) for the open advisory.
+
 ## M0 — Repository Foundation
 
 Acceptance criteria:
