@@ -37,4 +37,4 @@ See the [documentation site](apps/docs/README.md), [runnable examples](examples/
 
 The [beta release guide](docs/release-preparation.md) covers version PRs, automated staging, and maintainer approval. `pnpm release:check` verifies prospective package contents without publishing them.
 
-The project uses the [MIT License](LICENSE). Package publication remains deferred until M7 and project-owner approval.
+The project uses the [MIT License](LICENSE). The seven public packages are in beta; review [the release guide](docs/release-preparation.md) before preparing another version.

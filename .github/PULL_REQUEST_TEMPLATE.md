@@ -11,7 +11,7 @@
 - [ ] I reviewed staged paths and diff for secrets and agent-only files.
 - [ ] Public APIs, package dependencies, and client/server boundaries are intentional.
 
-## Scope
+## Release scope
 
-- [ ] This PR stays within the current milestone.
+- [ ] Public package changes include a Changeset, or this PR explains why one is unnecessary.
 - [ ] Documentation and tests are updated where appropriate.
