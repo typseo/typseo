@@ -8,9 +8,9 @@ export const alt = 'Typseo: An editor that understands your content.';
 
 export default async function OpenGraphImage() {
   const fontsDirectory = join(process.cwd(), 'assets', 'fonts');
-  const [geistRegular, geistBold] = await Promise.all([
-    readFile(join(fontsDirectory, 'Geist-Regular.ttf')),
-    readFile(join(fontsDirectory, 'Geist-Bold.ttf')),
+  const [interTightRegular, interTightBold] = await Promise.all([
+    readFile(join(fontsDirectory, 'InterTight-Regular.ttf')),
+    readFile(join(fontsDirectory, 'InterTight-Bold.ttf')),
   ]);
 
   return new ImageResponse(
@@ -24,7 +24,7 @@ export default async function OpenGraphImage() {
         padding: 72,
         background: '#f9f9f7',
         color: '#171a18',
-        fontFamily: 'Geist',
+        fontFamily: 'Inter Tight',
       }}
     >
       <div
@@ -83,8 +83,18 @@ export default async function OpenGraphImage() {
     {
       ...size,
       fonts: [
-        { name: 'Geist', data: geistRegular, weight: 400, style: 'normal' },
-        { name: 'Geist', data: geistBold, weight: 700, style: 'normal' },
+        {
+          name: 'Inter Tight',
+          data: interTightRegular,
+          weight: 400,
+          style: 'normal',
+        },
+        {
+          name: 'Inter Tight',
+          data: interTightBold,
+          weight: 700,
+          style: 'normal',
+        },
       ],
     },
   );

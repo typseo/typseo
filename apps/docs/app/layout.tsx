@@ -1,18 +1,12 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter_Tight } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import './global.css';
 
-const geistSans = Geist({
+const interTight = Inter_Tight({
   subsets: ['latin', 'vietnamese'],
-  variable: '--font-geist-sans',
-  display: 'swap',
-});
-
-const geistMono = Geist_Mono({
-  subsets: ['latin', 'vietnamese'],
-  variable: '--font-geist-mono',
+  variable: '--font-inter-tight',
   display: 'swap',
 });
 
@@ -36,7 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={interTight.variable}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
