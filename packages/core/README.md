@@ -1,5 +1,5 @@
 # @typseo/core
 
-Framework-independent SEO analysis for a reader-visible page snapshot. See the [API guide](https://github.com/typseo/typseo/blob/main/docs/seo-core.md).
+Framework-independent SEO analysis for a reader-visible page snapshot. See the [SEO engine guide](https://typseo-docs.vercel.app/docs/seo-toolkit/seo-engine) and [Core API](https://typseo-docs.vercel.app/docs/api-reference/core).
 
-This package is still private while Typseo prepares its first public release. Do not install from npm yet.
+This package is available as a public beta on npm. Pin an exact beta version when installing; see [Installation](https://typseo-docs.vercel.app/docs/introduction/installation).

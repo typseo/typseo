@@ -2,6 +2,8 @@
 
 The Next.js App Router app in `apps/docs` uses Fumadocs MDX and Tailwind CSS v4. It documents the seven public beta packages and their current APIs.
 
+Production: <https://typseo-docs.vercel.app/docs>.
+
 From the repository root:
 
 ```bash
