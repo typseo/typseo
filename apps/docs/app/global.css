@@ -209,6 +209,14 @@ body {
   border-radius: 0.3rem;
   font-size: 0.78rem;
 }
+.demo-editor-toolbar select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.3rem;
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+  font-size: 0.78rem;
+}
 .demo-editor-toolbar button:hover,
 .demo-editor-toolbar button[aria-pressed='true'] {
   background: var(--color-fd-muted);
@@ -217,6 +225,7 @@ body {
   opacity: 0.4;
 }
 .demo-editor-toolbar button:focus-visible,
+.demo-editor-toolbar select:focus-visible,
 .demo-editor-content .tiptap:focus-visible {
   outline: 2px solid var(--color-fd-foreground);
   outline-offset: 2px;
@@ -229,10 +238,21 @@ body {
 .demo-editor-content .tiptap p {
   margin: 0 0 0.75rem;
 }
-.demo-editor-content .tiptap h2 {
-  font-size: 1.2rem;
+.demo-editor-content .tiptap :is(h1, h2, h3, h4, h5, h6) {
   font-weight: 700;
   margin: 0 0 0.75rem;
+}
+.demo-editor-content .tiptap h1 {
+  font-size: 1.55rem;
+}
+.demo-editor-content .tiptap h2 {
+  font-size: 1.3rem;
+}
+.demo-editor-content .tiptap h3 {
+  font-size: 1.15rem;
+}
+.demo-editor-content .tiptap :is(h4, h5, h6) {
+  font-size: 1rem;
 }
 .demo-editor-output {
   margin: 0.9rem 0 0 !important;

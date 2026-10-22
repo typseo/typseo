@@ -4,17 +4,7 @@ import type {} from '@tiptap/starter-kit';
 import type { Editor } from '@tiptap/react';
 import { useEditorState } from '@tiptap/react';
 import { EditorToolbar } from '@typseo/ui';
-import {
-  ChevronDown,
-  Code2,
-  ImagePlus,
-  Link2,
-  Minus,
-  Quote,
-  Sparkles,
-  Strikethrough,
-  Underline,
-} from 'lucide-react';
+import { Code2, ImagePlus, Link2, Minus, Quote, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,12 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 
 interface PlaygroundToolbarProps {
@@ -53,23 +37,15 @@ export function PlaygroundToolbar({
     selector: ({ editor: selected }) => {
       const current = selected && !selected.isDestroyed ? selected : null;
       return {
-        underline: current?.isActive('underline') ?? false,
-        strike: current?.isActive('strike') ?? false,
         blockquote: current?.isActive('blockquote') ?? false,
         codeBlock: current?.isActive('codeBlock') ?? false,
         link: current?.isActive('link') ?? false,
-        heading: current?.isActive('heading')
-          ? (current.getAttributes('heading').level as number)
-          : 0,
       };
     },
   }) ?? {
-    underline: false,
-    strike: false,
     blockquote: false,
     codeBlock: false,
     link: false,
-    heading: 0,
   };
 
   const isDisabled = disabled || !editor;
@@ -106,8 +82,6 @@ export function PlaygroundToolbar({
     setDialog(null);
   }
 
-  const headingLabel = state.heading ? `Heading ${state.heading}` : 'Paragraph';
-
   return (
     <>
       <div
@@ -115,69 +89,12 @@ export function PlaygroundToolbar({
         aria-label="Editor formatting controls"
       >
         <div className="toolbar-scroll">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="toolbar-style"
-                disabled={isDisabled}
-              >
-                {headingLabel}
-                <ChevronDown className="size-3.5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem
-                onSelect={() => editor?.chain().focus().setParagraph().run()}
-              >
-                Paragraph
-              </DropdownMenuItem>
-              {[1, 2, 3].map((level) => (
-                <DropdownMenuItem
-                  key={level}
-                  onSelect={() =>
-                    editor
-                      ?.chain()
-                      .focus()
-                      .toggleHeading({ level: level as 1 | 2 | 3 })
-                      .run()
-                  }
-                >
-                  Heading {level}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <div className="toolbar-divider" aria-hidden="true" />
           <EditorToolbar
             editor={disabled ? null : editor}
             className="sdk-toolbar"
           />
           <div className="toolbar-divider" aria-hidden="true" />
           <div className="toolbar-extras">
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              title="Underline"
-              aria-label="Underline"
-              aria-pressed={state.underline}
-              disabled={isDisabled}
-              onClick={() => editor?.chain().focus().toggleUnderline().run()}
-            >
-              <Underline />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              title="Strikethrough"
-              aria-label="Strikethrough"
-              aria-pressed={state.strike}
-              disabled={isDisabled}
-              onClick={() => editor?.chain().focus().toggleStrike().run()}
-            >
-              <Strikethrough />
-            </Button>
             <Button
               variant="ghost"
               size="icon-sm"
