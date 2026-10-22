@@ -12,7 +12,9 @@ export interface EditorToolbarProps {
 const inactive = {
   bold: false,
   italic: false,
-  heading: false,
+  underline: false,
+  strike: false,
+  heading: 0,
   bulletList: false,
   orderedList: false,
   canUndo: false,
@@ -27,7 +29,11 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
         ? {
             bold: current.isActive('bold'),
             italic: current.isActive('italic'),
-            heading: current.isActive('heading', { level: 2 }),
+            underline: current.isActive('underline'),
+            strike: current.isActive('strike'),
+            heading: current.isActive('heading')
+              ? Number(current.getAttributes('heading').level)
+              : 0,
             bulletList: current.isActive('bulletList'),
             orderedList: current.isActive('orderedList'),
             canUndo: Boolean(current.commands.undo && current.can().undo()),
@@ -41,6 +47,28 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
 
   return (
     <div role="toolbar" aria-label="Text formatting" className={className}>
+      <select
+        aria-label="Text style"
+        value={selected.heading}
+        disabled={disabled || !editor?.commands.setHeading}
+        onChange={(event) => {
+          const level = Number(event.target.value);
+          if (level === 0) editor?.chain().focus().setParagraph().run();
+          else
+            editor
+              ?.chain()
+              .focus()
+              .setHeading({ level: level as 1 | 2 | 3 | 4 | 5 | 6 })
+              .run();
+        }}
+      >
+        <option value={0}>Paragraph</option>
+        {[1, 2, 3, 4, 5, 6].map((level) => (
+          <option key={level} value={level}>
+            Heading {level}
+          </option>
+        ))}
+      </select>
       <button
         type="button"
         aria-label="Bold"
@@ -67,15 +95,27 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
       </button>
       <button
         type="button"
-        aria-label="Heading 2"
-        aria-pressed={selected.heading}
-        disabled={disabled || !editor?.commands.toggleHeading}
+        aria-label="Underline"
+        aria-pressed={selected.underline}
+        disabled={disabled || !editor?.commands.toggleUnderline}
         onClick={() => {
-          if (editor?.commands.toggleHeading)
-            editor.chain().focus().toggleHeading({ level: 2 }).run();
+          if (editor?.commands.toggleUnderline)
+            editor.chain().focus().toggleUnderline().run();
         }}
       >
-        H2
+        <u>U</u>
+      </button>
+      <button
+        type="button"
+        aria-label="Strikethrough"
+        aria-pressed={selected.strike}
+        disabled={disabled || !editor?.commands.toggleStrike}
+        onClick={() => {
+          if (editor?.commands.toggleStrike)
+            editor.chain().focus().toggleStrike().run();
+        }}
+      >
+        <s>S</s>
       </button>
       <button
         type="button"
