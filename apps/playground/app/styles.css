@@ -126,6 +126,18 @@ button:disabled {
   overflow: hidden;
   background: var(--background);
 }
+.storage-warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
 .topbar {
   height: 64px;
   min-height: 64px;

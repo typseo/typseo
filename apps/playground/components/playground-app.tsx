@@ -35,7 +35,11 @@ import { PlaygroundToolbar } from '@/components/playground-toolbar';
 import { SeoPanel, type PanelTab } from '@/components/seo-panel';
 import { analyzeEditorDocument, countWords } from '@/lib/seo';
 import { applyAiEditToEditor, type CapturedSelection } from '@/lib/ai-editor';
-import { useDocumentWorkspace } from '@/lib/use-document-workspace';
+import {
+  useDocumentWorkspace,
+  legacyDocumentStorageKey,
+  documentStorageKey,
+} from '@/lib/use-document-workspace';
 
 const themeKey = 'typseo-playground-theme';
 const editorExtensions = [Image];
@@ -72,6 +76,7 @@ export function PlaygroundApp() {
     activeId,
     activeDocument,
     saveState,
+    storageError,
     scheduleBodySave,
     selectDocument,
     createDocument: createWorkspaceDocument,
@@ -130,11 +135,12 @@ export function PlaygroundApp() {
   }, []);
 
   const editor = useTypseoEditor({
-    value: activeDocument.html,
+    document: activeDocument.content,
+    instanceKey: activeId,
     extensions: editorExtensions,
     editable: !preview,
-    onChange: (html, currentEditor) => {
-      scheduleBodySave(activeId, html, () =>
+    onDocumentChange: (content, currentEditor) => {
+      scheduleBodySave(activeId, content, () =>
         setEditorJson(currentEditor.getJSON()),
       );
     },
@@ -267,7 +273,7 @@ export function PlaygroundApp() {
   function exportDocument(format: 'html' | 'json') {
     const current = {
       ...activeDocument,
-      html: editor?.getHTML() ?? activeDocument.html,
+      content: editor?.getJSON() ?? activeDocument.content,
     };
     const name = current.slug || 'untitled-document';
     if (format === 'json') {
@@ -278,8 +284,20 @@ export function PlaygroundApp() {
       );
       return;
     }
-    const html = `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(current.title)}</title><meta name="description" content="${escapeHtml(current.metaDescription)}"></head><body><article><h1>${escapeHtml(current.title)}</h1>${current.html}</article></body></html>`;
+    const html = `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(current.title)}</title><meta name="description" content="${escapeHtml(current.metaDescription)}"></head><body><article><h1>${escapeHtml(current.title)}</h1>${editor?.getHTML() ?? ''}</article></body></html>`;
     downloadFile(`${name}.html`, html, 'text/html');
+  }
+
+  function exportStoredBackup() {
+    try {
+      const backup =
+        localStorage.getItem(legacyDocumentStorageKey) ??
+        localStorage.getItem(documentStorageKey);
+      if (backup)
+        downloadFile('typseo-drafts-backup.json', backup, 'application/json');
+    } catch {
+      /* Storage may be blocked by the browser. */
+    }
   }
 
   const filteredDocuments = documents.filter((item) =>
@@ -482,6 +500,14 @@ export function PlaygroundApp() {
           className={`editor-pane ${showAnalysisMobile ? 'mobile-hidden' : ''}`}
           aria-label="Document editor"
         >
+          {storageError && (
+            <div role="alert" className="storage-warning">
+              {storageError}{' '}
+              <Button variant="outline" size="sm" onClick={exportStoredBackup}>
+                Download stored backup
+              </Button>
+            </div>
+          )}
           <div className="document-topline">
             <div className="breadcrumb">
               <span>Documents</span>
@@ -490,7 +516,11 @@ export function PlaygroundApp() {
             </div>
             <span className="save-indicator">
               <Check className="size-3.5" />
-              {saveState === 'editing' ? 'Saving locally...' : 'Saved locally'}
+              {storageError
+                ? 'Not saved'
+                : saveState === 'editing'
+                  ? 'Saving locally...'
+                  : 'Saved locally'}
             </span>
             <div className="document-actions">
               <Button
@@ -560,9 +590,11 @@ export function PlaygroundApp() {
             </span>
             <span>
               <i className="status-dot" />
-              {saveState === 'editing'
-                ? 'Saving...'
-                : 'All changes saved locally'}
+              {storageError
+                ? 'Local storage unavailable'
+                : saveState === 'editing'
+                  ? 'Saving...'
+                  : 'All changes saved locally'}
             </span>
             <Button
               variant="ghost"

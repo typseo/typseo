@@ -23,7 +23,7 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
   const state = useEditorState({
     editor,
     selector: ({ editor: current }) =>
-      current
+      current && !current.isDestroyed
         ? {
             bold: current.isActive('bold'),
             italic: current.isActive('italic'),

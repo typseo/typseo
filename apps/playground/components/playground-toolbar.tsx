@@ -50,16 +50,19 @@ export function PlaygroundToolbar({
   const [error, setError] = useState('');
   const state = useEditorState({
     editor,
-    selector: ({ editor: current }) => ({
-      underline: current?.isActive('underline') ?? false,
-      strike: current?.isActive('strike') ?? false,
-      blockquote: current?.isActive('blockquote') ?? false,
-      codeBlock: current?.isActive('codeBlock') ?? false,
-      link: current?.isActive('link') ?? false,
-      heading: current?.isActive('heading')
-        ? (current.getAttributes('heading').level as number)
-        : 0,
-    }),
+    selector: ({ editor: selected }) => {
+      const current = selected && !selected.isDestroyed ? selected : null;
+      return {
+        underline: current?.isActive('underline') ?? false,
+        strike: current?.isActive('strike') ?? false,
+        blockquote: current?.isActive('blockquote') ?? false,
+        codeBlock: current?.isActive('codeBlock') ?? false,
+        link: current?.isActive('link') ?? false,
+        heading: current?.isActive('heading')
+          ? (current.getAttributes('heading').level as number)
+          : 0,
+      };
+    },
   }) ?? {
     underline: false,
     strike: false,

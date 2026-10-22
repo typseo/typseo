@@ -1,9 +1,9 @@
 'use client';
 
-import type { AnyExtension, EditorOptions } from '@tiptap/core';
+import type { AnyExtension, EditorOptions, JSONContent } from '@tiptap/core';
 import { useEditor, type Editor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useMemo, useRef } from 'react';
+import { createTypseoPreset } from './preset.js';
 
 export type TypseoEditorInstance = Editor;
 
@@ -14,12 +14,20 @@ export interface UseTypseoEditorOptions {
   defaultValue?: string;
   /** Called with serialized HTML only when the document changes. */
   onChange?: (html: string, editor: Editor) => void;
+  /** Controlled Tiptap JSON. Use instead of value. */
+  document?: JSONContent;
+  /** Initial Tiptap JSON for an uncontrolled editor. */
+  defaultDocument?: JSONContent;
+  /** Called with canonical JSON only when the document changes. */
+  onDocumentChange?: (document: JSONContent, editor: Editor) => void;
   /** Additional Tiptap extensions. Configure default nodes/marks through starterKit. */
   extensions?: AnyExtension[];
   /** Set false to replace StarterKit with an entirely custom schema. */
   starterKit?: boolean;
   editable?: boolean;
   editorProps?: EditorOptions['editorProps'];
+  /** Recreate the editor (and undo history) when switching independent documents. */
+  instanceKey?: string;
 }
 
 /**
@@ -30,15 +38,23 @@ export function useTypseoEditor({
   value,
   defaultValue = '',
   onChange,
+  document,
+  defaultDocument,
+  onDocumentChange,
   extensions,
   starterKit = true,
   editable = true,
   editorProps,
+  instanceKey,
 }: UseTypseoEditorOptions = {}): Editor | null {
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const onDocumentChangeRef = useRef(onDocumentChange);
+  onDocumentChangeRef.current = onDocumentChange;
   const valueRef = useRef(value);
   valueRef.current = value;
+  const documentRef = useRef(document);
+  documentRef.current = document;
 
   // An inline array literal must not recreate the editor on every parent render.
   const extensionsRef = useRef<AnyExtension[]>([]);
@@ -53,43 +69,65 @@ export function useTypseoEditor({
   }
 
   const configuredExtensions = useMemo(
-    () =>
-      starterKit
-        ? [StarterKit, ...extensionsRef.current]
-        : extensionsRef.current,
+    () => createTypseoPreset({ starterKit, extensions: extensionsRef.current }),
     [extensionsRef.current, starterKit],
   );
 
   const editor = useEditor(
     {
       extensions: configuredExtensions,
-      content: value ?? defaultValue,
+      content: document ?? value ?? defaultDocument ?? defaultValue,
       editable,
       ...(editorProps ? { editorProps } : {}),
       immediatelyRender: false,
       shouldRerenderOnTransaction: false,
       onUpdate: ({ editor: updatedEditor }) => {
-        const html = updatedEditor.getHTML();
-        if (html !== valueRef.current)
-          onChangeRef.current?.(html, updatedEditor);
+        if (onChangeRef.current) {
+          const html = updatedEditor.getHTML();
+          if (html !== valueRef.current)
+            onChangeRef.current(html, updatedEditor);
+        }
+        if (onDocumentChangeRef.current) {
+          const json = updatedEditor.getJSON();
+          if (JSON.stringify(json) !== JSON.stringify(documentRef.current)) {
+            onDocumentChangeRef.current(json, updatedEditor);
+          }
+        }
       },
     },
-    [configuredExtensions],
+    [configuredExtensions, instanceKey],
   );
 
   useEffect(() => {
-    if (editor && value !== undefined && editor.getHTML() !== value) {
+    if (
+      editor &&
+      !editor.isDestroyed &&
+      value !== undefined &&
+      editor.getHTML() !== value
+    ) {
       editor.commands.setContent(value, { emitUpdate: false });
     }
   }, [editor, value]);
 
   useEffect(() => {
-    editor?.setEditable(editable);
+    if (
+      editor &&
+      !editor.isDestroyed &&
+      document !== undefined &&
+      JSON.stringify(editor.getJSON()) !== JSON.stringify(document)
+    ) {
+      editor.commands.setContent(document, { emitUpdate: false });
+    }
+  }, [editor, document]);
+
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) editor.setEditable(editable);
   }, [editor, editable]);
 
   useEffect(() => {
-    if (editor && editorProps) editor.setOptions({ editorProps });
+    if (editor && !editor.isDestroyed && editorProps)
+      editor.setOptions({ editorProps });
   }, [editor, editorProps]);
 
-  return editor;
+  return editor && !editor.isDestroyed ? editor : null;
 }
