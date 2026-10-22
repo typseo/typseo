@@ -9,8 +9,8 @@ export function DocsHero() {
       </h1>
       <p className="docs-intro-copy">
         A composable Tiptap editor, a deterministic SEO engine, and optional
-        integrations for React and Next.js. Start from the workspace today; the
-        packages are not yet published to npm.
+        integrations for React and Next.js. Install the public beta from npm or
+        explore the workspace examples.
       </p>
     </div>
   );
