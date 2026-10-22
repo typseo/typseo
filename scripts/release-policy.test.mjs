@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { isExpectedBetaManifest } from './release-policy.mjs';
+import {
+  hasUnpublishedClaim,
+  isExpectedBetaManifest,
+} from './release-policy.mjs';
 
 const betaManifest = {
   version: '0.1.0-beta.0',
@@ -26,5 +29,21 @@ describe('first beta release policy', () => {
     { ...betaManifest, publishConfig: { access: 'public', tag: 'latest' } },
   ])('rejects a manifest outside the reviewed beta policy', (manifest) => {
     expect(isExpectedBetaManifest(manifest)).toBe(false);
+  });
+});
+
+describe('public beta README policy', () => {
+  it.each([
+    'This package is still private.',
+    'Do not install from npm yet.',
+    'Packages are not yet published to npm.',
+  ])('rejects stale unpublished guidance: %s', (readme) => {
+    expect(hasUnpublishedClaim(readme)).toBe(true);
+  });
+
+  it('accepts public beta installation guidance', () => {
+    expect(
+      hasUnpublishedClaim('Available as a public beta. Pin an exact version.'),
+    ).toBe(false);
   });
 });

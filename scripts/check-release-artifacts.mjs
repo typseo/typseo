@@ -2,7 +2,10 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { isExpectedBetaManifest } from './release-policy.mjs';
+import {
+  hasUnpublishedClaim,
+  isExpectedBetaManifest,
+} from './release-policy.mjs';
 
 const repositoryRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageRoot = join(repositoryRoot, 'packages');
@@ -14,6 +17,7 @@ const failures = [];
 for (const directory of packageDirectories) {
   const cwd = join(packageRoot, directory.name);
   const manifest = JSON.parse(readFileSync(join(cwd, 'package.json'), 'utf8'));
+  const readme = readFileSync(join(cwd, 'README.md'), 'utf8');
   const packed = JSON.parse(
     execFileSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], {
       cwd,
@@ -30,6 +34,10 @@ for (const directory of packageDirectories) {
     );
   if (manifest.license !== 'MIT')
     failures.push(`${manifest.name}: missing MIT SPDX license`);
+  if (hasUnpublishedClaim(readme))
+    failures.push(
+      `${manifest.name}: README incorrectly says beta is unpublished`,
+    );
   for (const required of ['package.json', 'README.md', 'dist/LICENSE']) {
     if (!files.has(required))
       failures.push(`${manifest.name}: missing ${required} from npm tarball`);

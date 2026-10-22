@@ -1,5 +1,5 @@
 # @typseo/next
 
-Next.js App Router metadata and Article JSON-LD helpers. See the [Next.js guide](https://github.com/typseo/typseo/blob/main/docs/seo-ui-next.md).
+Next.js App Router metadata and Article JSON-LD helpers. See the [Next.js guide](https://typseo-docs.vercel.app/docs/integrations/nextjs).
 
-This package is still private while Typseo prepares its first public release. Do not install from npm yet.
+This package is available as a public beta on npm. Pin an exact beta version when installing; see [Installation](https://typseo-docs.vercel.app/docs/introduction/installation).

@@ -1,5 +1,5 @@
 # @typseo/gsc
 
-Optional server-only Google Search Console adapter. Import from `@typseo/gsc/server` and supply OAuth credentials from your own server. See the [integration guide](https://github.com/typseo/typseo/blob/main/docs/external-integrations.md).
+Optional server-only Google Search Console adapter. Import from `@typseo/gsc/server` and supply OAuth credentials from your own server. See the [Search Console guide](https://typseo-docs.vercel.app/docs/integrations/google-search-console).
 
-This package is still private while Typseo prepares its first public release.
+This package is available as a public beta on npm. Pin an exact beta version when installing; see [Installation](https://typseo-docs.vercel.app/docs/introduction/installation).

@@ -1,5 +1,5 @@
 # @typseo/react
 
-Headless Tiptap v3 bindings for React. See the [editor guide](https://github.com/typseo/typseo/blob/main/docs/editor-react.md).
+Headless Tiptap v3 bindings for React. See the [React hooks guide](https://typseo-docs.vercel.app/docs/editor/react-hooks).
 
-This package is still private while Typseo prepares its first public release. Do not install from npm yet.
+This package is available as a public beta on npm. Pin an exact beta version when installing; see [Installation](https://typseo-docs.vercel.app/docs/introduction/installation).
