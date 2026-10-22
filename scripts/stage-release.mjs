@@ -7,6 +7,7 @@ import {
   orderReleasePackages,
 } from './release-plan.mjs';
 import { isExpectedBetaManifest } from './release-policy.mjs';
+import { isPublishedOnNpm } from './registry-lookup.mjs';
 
 if (
   process.env.GITHUB_ACTIONS !== 'true' ||
@@ -52,24 +53,9 @@ for (const manifest of manifests) {
   }
   checkPackedDependencies(packed, manifests);
 
-  const registryUrl = `https://registry.npmjs.org/${encodeURIComponent(manifest.name)}/${manifest.version}`;
-  const response = await fetch(registryUrl, {
-    headers: { 'cache-control': 'no-cache' },
-    signal: AbortSignal.timeout(15_000),
-  });
-  if (response.ok) {
-    const published = await response.json();
-    if (
-      published.name !== manifest.name ||
-      published.version !== manifest.version
-    ) {
-      throw new Error(`${spec}: unexpected registry response`);
-    }
+  if (await isPublishedOnNpm(manifest.name, manifest.version)) {
     console.log(`Already public: ${spec}`);
     continue;
-  }
-  if (response.status !== 404) {
-    throw new Error(`${spec}: registry check returned ${response.status}`);
   }
 
   pending.push({ spec, tarball });
