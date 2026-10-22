@@ -321,6 +321,9 @@ export function PlaygroundApp() {
           <kbd>Ctrl K</kbd>
         </div>
         <div className="topbar-actions">
+          <a className="github-link" href="https://typseo-docs.vercel.app/docs">
+            Docs
+          </a>
           <Button
             variant="ghost"
             size="icon-sm"
@@ -461,6 +464,8 @@ export function PlaygroundApp() {
           </div>
           <div className="sidebar-bottom">
             <p>Open-source editor toolkit</p>
+            <a href="https://typseo-docs.vercel.app/">Product home ↗</a>
+            <a href="https://typseo-docs.vercel.app/docs">Documentation ↗</a>
             <a href="/seo-example">Next.js example ↗</a>
             <a
               href="https://github.com/typseo/typseo"

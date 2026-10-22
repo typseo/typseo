@@ -1,13 +1,18 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { source } from '../../lib/source';
 import type { ReactNode } from 'react';
+import Link from 'next/link';
+
+const playgroundUrl =
+  process.env.NEXT_PUBLIC_PLAYGROUND_URL ??
+  'https://typseo-playground.vercel.app';
 
 function Brand() {
   return (
-    <span className="typseo-logo">
+    <Link href="/" className="typseo-logo" aria-label="Typseo home">
       <span className="typseo-logo-mark">t</span>typseo{' '}
       <span className="typseo-logo-sub">/ docs</span>
-    </span>
+    </Link>
   );
 }
 
@@ -20,7 +25,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       links={[
         {
           text: 'Playground',
-          url: 'https://github.com/typseo/typseo/tree/main/apps/playground',
+          url: playgroundUrl,
           external: true,
         },
       ]}

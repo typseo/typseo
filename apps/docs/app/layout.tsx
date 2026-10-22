@@ -18,17 +18,17 @@ const geistMono = Geist_Mono({
 
 const configuredOrigin = process.env.NEXT_PUBLIC_DOCS_SITE_URL;
 export const metadata: Metadata = {
-  title: { default: 'Typseo Docs', template: '%s | Typseo Docs' },
+  title: { default: 'Typseo', template: '%s | Typseo' },
   description:
     'Documentation for the Typseo editor, SEO toolkit, and integrations.',
   // Local fallback keeps generated image URLs on the docs port during preview.
   // Production must provide the real origin; robots disallows indexing otherwise.
   metadataBase: new URL(configuredOrigin ?? 'http://localhost:3001'),
   openGraph: {
-    title: 'Typseo Docs',
+    title: 'Typseo',
     description: 'Build an editor and SEO workflow that stays in your app.',
     type: 'website',
-    siteName: 'Typseo Docs',
+    siteName: 'Typseo',
   },
 };
 

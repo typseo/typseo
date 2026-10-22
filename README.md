@@ -14,9 +14,9 @@ pnpm install
 pnpm dev
 ```
 
-Open <http://localhost:3000>. The playground combines the Tiptap editor with live SEO analysis from `@typseo/core`. Drafts are saved to this browser's local storage; there is no account or backend. See the [playground guide](docs/playground.md) for controls, export, and limitations.
+Open <http://localhost:3000>, or try the [public Playground](https://typseo-playground.vercel.app). It combines the Tiptap editor with live SEO analysis from `@typseo/core`. Drafts are saved to this browser's local storage; there is no account or backend. See the [playground guide](docs/playground.md) for controls, export, and limitations.
 
-Read the [public documentation](https://typseo-docs.vercel.app/docs), or run `pnpm dev:docs` locally at <http://localhost:3001>. Three standalone integrations live in [`examples/`](examples/README.md): Next.js App Router, Next.js Pages Router, and React/Vite. Each has its own run command and uses workspace packages. All seven libraries are also available as public betas under the [`@typseo` npm scope](https://www.npmjs.com/org/typseo); pin an exact beta version in applications.
+Visit the [Typseo homepage](https://typseo-docs.vercel.app/) and [public documentation](https://typseo-docs.vercel.app/docs), or run `pnpm dev:docs` locally at <http://localhost:3001>. Three standalone integrations live in [`examples/`](examples/README.md): Next.js App Router, Next.js Pages Router, and React/Vite. Each has its own run command and uses workspace packages. All seven libraries are also available as public betas under the [`@typseo` npm scope](https://www.npmjs.com/org/typseo); pin an exact beta version in applications.
 
 ## Checks
 
