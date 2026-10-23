@@ -609,6 +609,25 @@ button:disabled {
   padding-left: 27px;
   margin: 4px 0 24px;
 }
+.editor-content .ProseMirror ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 0;
+}
+.editor-content .ProseMirror li[data-type='taskItem'] {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.editor-content .ProseMirror li[data-type='taskItem'] > label {
+  margin-top: 3px;
+}
+.editor-content .ProseMirror li[data-type='taskItem'] > label input {
+  accent-color: var(--foreground);
+}
+.editor-content .ProseMirror li[data-type='taskItem'] > div {
+  flex: 1;
+  min-width: 0;
+}
 .editor-content .ProseMirror ol {
   list-style: decimal;
   padding-left: 27px;

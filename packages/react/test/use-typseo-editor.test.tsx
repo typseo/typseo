@@ -2,6 +2,7 @@
 
 import { Extension } from '@tiptap/core';
 import TextAlign from '@tiptap/extension-text-align';
+import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { createTypseoPreset, useTypseoEditor } from '../src/index.js';
@@ -109,6 +110,45 @@ describe('useTypseoEditor', () => {
     expect(() =>
       createTypseoPreset({ textAlign: true, extensions: [TextAlign] }),
     ).toThrow('Duplicate Tiptap extension: textAlign');
+    expect(() =>
+      createTypseoPreset({ taskLists: true, extensions: [TaskList] }),
+    ).toThrow('Duplicate Tiptap extension: taskList');
+    expect(() =>
+      createTypseoPreset({ taskLists: true, extensions: [TaskItem] }),
+    ).toThrow('Duplicate Tiptap extension: taskItem');
+  });
+
+  it('keeps task lists opt-in and restores checked JSON', async () => {
+    const saved = {
+      type: 'doc',
+      content: [
+        {
+          type: 'taskList',
+          content: [
+            {
+              type: 'taskItem',
+              attrs: { checked: true },
+              content: [
+                {
+                  type: 'paragraph',
+                  content: [{ type: 'text', text: 'Reviewed' }],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(
+      createTypseoPreset().some((extension) => extension.name === 'taskList'),
+    ).toBe(false);
+    const { result, unmount } = renderHook(() =>
+      useTypseoEditor({ defaultDocument: saved, taskLists: true }),
+    );
+    await waitFor(() => expect(result.current).not.toBeNull());
+    expect(result.current?.getJSON()).toEqual(saved);
+    expect(result.current?.getHTML()).toContain('data-checked="true"');
+    unmount();
   });
 
   it('keeps alignment opt-in and restores aligned JSON', async () => {

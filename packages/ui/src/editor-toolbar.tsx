@@ -1,6 +1,7 @@
 'use client';
 
 import { useEditorState } from '@tiptap/react';
+import type {} from '@tiptap/extension-list';
 import type {} from '@tiptap/extension-text-align';
 import type {} from '@tiptap/starter-kit';
 import type { TypseoEditorInstance } from '@typseo/react';
@@ -19,6 +20,7 @@ const inactive = {
   alignment: 'left',
   bulletList: false,
   orderedList: false,
+  taskList: false,
   canUndo: false,
   canRedo: false,
 };
@@ -43,6 +45,7 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
             ),
             bulletList: current.isActive('bulletList'),
             orderedList: current.isActive('orderedList'),
+            taskList: current.isActive('taskList'),
             canUndo: Boolean(current.commands.undo && current.can().undo()),
             canRedo: Boolean(current.commands.redo && current.can().redo()),
           }
@@ -52,6 +55,7 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
   const disabled = !editor || !editor.isEditable;
   const selected = state ?? inactive;
   const supportsAlignment = Boolean(editor?.commands.setTextAlign);
+  const supportsTaskLists = Boolean(editor?.commands.toggleTaskList);
 
   return (
     <div role="toolbar" aria-label="Text formatting" className={className}>
@@ -168,6 +172,17 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
       >
         1. List
       </button>
+      {supportsTaskLists && (
+        <button
+          type="button"
+          aria-label="Task list"
+          aria-pressed={selected.taskList}
+          disabled={disabled || !editor?.can().toggleTaskList()}
+          onClick={() => editor?.chain().focus().toggleTaskList().run()}
+        >
+          ☐ List
+        </button>
+      )}
       <button
         type="button"
         aria-label="Undo"

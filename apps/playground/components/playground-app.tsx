@@ -140,6 +140,7 @@ export function PlaygroundApp() {
     instanceKey: activeId,
     extensions: editorExtensions,
     textAlign: true,
+    taskLists: true,
     editable: storageReady && !preview,
     onDocumentChange: (content, currentEditor) => {
       if (!storageReady) return;

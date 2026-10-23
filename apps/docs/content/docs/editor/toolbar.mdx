@@ -27,4 +27,6 @@ The native style picker offers Paragraph and H1–H6 with keyboard support. Bold
 
 Opt in to paragraph and heading alignment with `useTypseoEditor({ textAlign: true })` or `<TypseoEditor textAlign />`. The toolbar then shows a native Left / Center / Right / Justify picker. Alignment is stored in Tiptap JSON and HTML; existing editors keep their current schema unless they opt in. Tiptap documents a Firefox limitation for justified text with `white-space: pre-wrap`.
 
+Opt in to task lists with `useTypseoEditor({ taskLists: true })` or `<TypseoEditor taskLists />`. The toolbar then shows a checkable-list button. Task items can be nested with Tab and Shift+Tab, and their checked state is serialized with the document. The host app is responsible for task-list styling.
+
 See [UI API](/docs/api-reference/ui) for props.
