@@ -22,6 +22,9 @@ describe('EditorToolbar typography', () => {
     );
     await waitFor(() => expect(result.current).not.toBeNull());
     render(<EditorToolbar editor={result.current} />);
+    expect(
+      screen.queryByRole('combobox', { name: 'Text alignment' }),
+    ).toBeNull();
 
     const style = screen.getByRole('combobox', { name: 'Text style' });
     expect(style.querySelectorAll('option')).toHaveLength(7);
@@ -82,5 +85,29 @@ describe('EditorToolbar typography', () => {
       'disabled',
       true,
     );
+  });
+
+  it('shows alignment only when enabled and keeps it undoable', async () => {
+    const { result, unmount } = renderHook(() =>
+      useTypseoEditor({ defaultValue: '<p>Words</p>', textAlign: true }),
+    );
+    await waitFor(() => expect(result.current).not.toBeNull());
+    render(<EditorToolbar editor={result.current} />);
+
+    const alignment = screen.getByRole('combobox', { name: 'Text alignment' });
+    fireEvent.change(alignment, { target: { value: 'center' } });
+    expect(result.current?.getJSON().content?.[0]?.attrs?.textAlign).toBe(
+      'center',
+    );
+    act(() => result.current?.commands.undo());
+    expect(result.current?.getJSON().content?.[0]?.attrs?.textAlign).toBeNull();
+    act(() => result.current?.commands.redo());
+    expect(result.current?.getJSON().content?.[0]?.attrs?.textAlign).toBe(
+      'center',
+    );
+
+    fireEvent.change(alignment, { target: { value: 'left' } });
+    expect(result.current?.getJSON().content?.[0]?.attrs?.textAlign).toBeNull();
+    unmount();
   });
 });

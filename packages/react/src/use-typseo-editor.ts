@@ -24,6 +24,8 @@ export interface UseTypseoEditorOptions {
   extensions?: AnyExtension[];
   /** Set false to replace StarterKit with an entirely custom schema. */
   starterKit?: boolean;
+  /** Opt in to paragraph and heading alignment. Existing documents are unchanged by default. */
+  textAlign?: boolean;
   editable?: boolean;
   editorProps?: EditorOptions['editorProps'];
   /** Recreate the editor (and undo history) when switching independent documents. */
@@ -43,6 +45,7 @@ export function useTypseoEditor({
   onDocumentChange,
   extensions,
   starterKit = true,
+  textAlign = false,
   editable = true,
   editorProps,
   instanceKey,
@@ -69,8 +72,13 @@ export function useTypseoEditor({
   }
 
   const configuredExtensions = useMemo(
-    () => createTypseoPreset({ starterKit, extensions: extensionsRef.current }),
-    [extensionsRef.current, starterKit],
+    () =>
+      createTypseoPreset({
+        starterKit,
+        textAlign,
+        extensions: extensionsRef.current,
+      }),
+    [extensionsRef.current, starterKit, textAlign],
   );
 
   const editor = useEditor(

@@ -13,6 +13,7 @@ export function EditorLivePreview() {
       </div>
       <TypseoEditor
         defaultValue="<p>Start writing with Typseo.</p>"
+        textAlign
         onChange={setHtml}
         ariaLabel="Try the Typseo editor"
         className="demo-editor"

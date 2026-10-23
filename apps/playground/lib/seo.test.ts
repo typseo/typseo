@@ -40,6 +40,23 @@ describe('playground SEO adapter', () => {
     expect(snapshot.images).toEqual([{ alt: '' }]);
   });
 
+  it('ignores alignment attributes in the SEO text snapshot', () => {
+    const snapshot = toSeoDocument(
+      { title: 'Aligned page', metaDescription: '', focusKeyword: '' },
+      {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            attrs: { textAlign: 'center' },
+            content: [{ type: 'text', text: 'Readable content' }],
+          },
+        ],
+      },
+    );
+    expect(snapshot.bodyText).toBe('Aligned page\nReadable content');
+  });
+
   it('separates block text without splitting inline marks or hard breaks', () => {
     expect(
       textFromNode({

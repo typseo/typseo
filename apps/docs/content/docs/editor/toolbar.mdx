@@ -25,4 +25,6 @@ export function CustomEditor() {
 
 The native style picker offers Paragraph and H1–H6 with keyboard support. Bold, italic, underline, strikethrough, lists, undo, and redo expose accessible labels and disabled states; toggles also expose pressed state. Formatting uses StarterKit's existing commands, so it remains undoable and survives JSON or HTML serialization. Host CSS must provide visible focus indicators, contrast, and spacing. The toolbar operates on the editor instance; it does not own persistence or analysis.
 
+Opt in to paragraph and heading alignment with `useTypseoEditor({ textAlign: true })` or `<TypseoEditor textAlign />`. The toolbar then shows a native Left / Center / Right / Justify picker. Alignment is stored in Tiptap JSON and HTML; existing editors keep their current schema unless they opt in. Tiptap documents a Firefox limitation for justified text with `white-space: pre-wrap`.
+
 See [UI API](/docs/api-reference/ui) for props.

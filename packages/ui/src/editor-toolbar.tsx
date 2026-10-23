@@ -1,6 +1,7 @@
 'use client';
 
 import { useEditorState } from '@tiptap/react';
+import type {} from '@tiptap/extension-text-align';
 import type {} from '@tiptap/starter-kit';
 import type { TypseoEditorInstance } from '@typseo/react';
 
@@ -15,6 +16,7 @@ const inactive = {
   underline: false,
   strike: false,
   heading: 0,
+  alignment: 'left',
   bulletList: false,
   orderedList: false,
   canUndo: false,
@@ -34,6 +36,11 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
             heading: current.isActive('heading')
               ? Number(current.getAttributes('heading').level)
               : 0,
+            alignment: String(
+              current.getAttributes(
+                current.isActive('heading') ? 'heading' : 'paragraph',
+              ).textAlign ?? 'left',
+            ),
             bulletList: current.isActive('bulletList'),
             orderedList: current.isActive('orderedList'),
             canUndo: Boolean(current.commands.undo && current.can().undo()),
@@ -44,6 +51,7 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
 
   const disabled = !editor || !editor.isEditable;
   const selected = state ?? inactive;
+  const supportsAlignment = Boolean(editor?.commands.setTextAlign);
 
   return (
     <div role="toolbar" aria-label="Text formatting" className={className}>
@@ -69,6 +77,25 @@ export function EditorToolbar({ editor, className }: EditorToolbarProps) {
           </option>
         ))}
       </select>
+      {supportsAlignment && (
+        <select
+          aria-label="Text alignment"
+          value={selected.alignment}
+          disabled={disabled || !editor?.can().setTextAlign('center')}
+          onChange={(event) => {
+            const alignment = event.target.value as
+              'left' | 'center' | 'right' | 'justify';
+            if (alignment === 'left')
+              editor?.chain().focus().unsetTextAlign().run();
+            else editor?.chain().focus().setTextAlign(alignment).run();
+          }}
+        >
+          <option value="left">Align left</option>
+          <option value="center">Align center</option>
+          <option value="right">Align right</option>
+          <option value="justify">Justify</option>
+        </select>
+      )}
       <button
         type="button"
         aria-label="Bold"
