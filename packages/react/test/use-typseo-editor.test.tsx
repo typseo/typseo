@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { Extension } from '@tiptap/core';
+import TextAlign from '@tiptap/extension-text-align';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { createTypseoPreset, useTypseoEditor } from '../src/index.js';
@@ -105,6 +106,69 @@ describe('useTypseoEditor', () => {
         extensions: [Extension.create({ name: 'paragraph' })],
       }),
     ).toThrow('Duplicate Tiptap extension: paragraph');
+    expect(() =>
+      createTypseoPreset({ textAlign: true, extensions: [TextAlign] }),
+    ).toThrow('Duplicate Tiptap extension: textAlign');
+  });
+
+  it('keeps alignment opt-in and restores aligned JSON', async () => {
+    const aligned = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          attrs: { textAlign: 'right' },
+          content: [{ type: 'text', text: 'Aligned' }],
+        },
+      ],
+    };
+    expect(
+      createTypseoPreset().some((extension) => extension.name === 'textAlign'),
+    ).toBe(false);
+    const { result, unmount } = renderHook(() =>
+      useTypseoEditor({ defaultDocument: aligned, textAlign: true }),
+    );
+    await waitFor(() => expect(result.current).not.toBeNull());
+    expect(result.current?.getJSON().content?.[0]?.attrs?.textAlign).toBe(
+      'right',
+    );
+    expect(result.current?.getHTML()).toContain('text-align: right');
+    unmount();
+  });
+
+  it('hydrates an aligned draft after an initially empty editor without echoing a change', async () => {
+    const empty = { type: 'doc', content: [{ type: 'paragraph' }] };
+    const saved = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          attrs: { textAlign: 'center' },
+          content: [{ type: 'text', text: 'Saved draft' }],
+        },
+      ],
+    };
+    const onDocumentChange = vi.fn();
+    const { result, rerender, unmount } = renderHook(
+      ({ ready }) =>
+        useTypseoEditor({
+          document: ready ? saved : empty,
+          textAlign: true,
+          onDocumentChange: (content, editor) => {
+            if (ready) onDocumentChange(content, editor);
+          },
+        }),
+      { initialProps: { ready: false } },
+    );
+    await waitFor(() => expect(result.current).not.toBeNull());
+    rerender({ ready: true });
+    await waitFor(() =>
+      expect(result.current?.getJSON().content?.[0]?.attrs?.textAlign).toBe(
+        'center',
+      ),
+    );
+    expect(onDocumentChange).not.toHaveBeenCalled();
+    unmount();
   });
 
   it('keeps undo and redo for JSON-backed editing', async () => {

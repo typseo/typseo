@@ -96,6 +96,37 @@ describe('Playground document workspace', () => {
     expect(stored.documents[0].content).toEqual(body('Latest keystrokes'));
   });
 
+  it('preserves alignment attributes across document switching and reload', async () => {
+    const aligned = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          attrs: { textAlign: 'center' },
+          content: [{ type: 'text', text: 'Centered draft' }],
+        },
+      ],
+    };
+    const first = renderHook(() => useDocumentWorkspace());
+    await waitFor(() =>
+      expect(localStorage.getItem(documentStorageKey)).not.toBeNull(),
+    );
+    act(() => first.result.current.createDocument());
+    act(() =>
+      first.result.current.scheduleBodySave('new-document-id', aligned),
+    );
+    act(() => first.result.current.selectDocument(sampleDocument.id));
+    first.unmount();
+
+    const restored = renderHook(() => useDocumentWorkspace());
+    await waitFor(() =>
+      expect(restored.result.current.documents).toHaveLength(2),
+    );
+    expect(restored.result.current.storageReady).toBe(true);
+    act(() => restored.result.current.selectDocument('new-document-id'));
+    expect(restored.result.current.activeDocument.content).toEqual(aligned);
+  });
+
   it('ignores invalid stored documents and keeps the sample available', async () => {
     localStorage.setItem(
       documentStorageKey,

@@ -182,6 +182,7 @@ export function useDocumentWorkspace() {
     documents,
     activeId,
     activeDocument,
+    storageReady,
     saveState,
     storageError,
     scheduleBodySave,

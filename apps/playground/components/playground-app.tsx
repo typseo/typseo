@@ -75,6 +75,7 @@ export function PlaygroundApp() {
     documents,
     activeId,
     activeDocument,
+    storageReady,
     saveState,
     storageError,
     scheduleBodySave,
@@ -135,11 +136,13 @@ export function PlaygroundApp() {
   }, []);
 
   const editor = useTypseoEditor({
-    document: activeDocument.content,
+    document: storageReady ? activeDocument.content : emptyJson,
     instanceKey: activeId,
     extensions: editorExtensions,
-    editable: !preview,
+    textAlign: true,
+    editable: storageReady && !preview,
     onDocumentChange: (content, currentEditor) => {
+      if (!storageReady) return;
       scheduleBodySave(activeId, content, () =>
         setEditorJson(currentEditor.getJSON()),
       );
@@ -148,7 +151,7 @@ export function PlaygroundApp() {
   });
 
   useEffect(() => {
-    if (!editor) return;
+    if (!editor || !storageReady) return;
     let cancelled = false;
     queueMicrotask(() => {
       if (!cancelled) setEditorJson(editor.getJSON());
@@ -156,7 +159,7 @@ export function PlaygroundApp() {
     return () => {
       cancelled = true;
     };
-  }, [editor, activeId]);
+  }, [editor, activeId, storageReady]);
 
   const { snapshot, analysis } = useMemo(
     () =>
