@@ -238,6 +238,22 @@ body {
 .demo-editor-content .tiptap p {
   margin: 0 0 0.75rem;
 }
+.demo-editor-content .tiptap ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 0;
+}
+.demo-editor-content .tiptap li[data-type='taskItem'] {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.demo-editor-content .tiptap li[data-type='taskItem'] > div {
+  flex: 1;
+  min-width: 0;
+}
+.demo-editor-content .tiptap li[data-type='taskItem'] input {
+  accent-color: currentColor;
+}
 .demo-editor-content .tiptap :is(h1, h2, h3, h4, h5, h6) {
   font-weight: 700;
   margin: 0 0 0.75rem;

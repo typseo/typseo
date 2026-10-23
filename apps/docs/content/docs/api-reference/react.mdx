@@ -16,12 +16,13 @@ interface UseTypseoEditorOptions {
   extensions?: AnyExtension[];
   starterKit?: boolean;
   textAlign?: boolean;
+  taskLists?: boolean;
   editable?: boolean;
   editorProps?: EditorOptions['editorProps'];
   instanceKey?: string;
 }
 ```
 
-Use either `value` or `defaultValue` for HTML consumers, or `document` or `defaultDocument` for canonical Tiptap JSON. Do not mix controlled HTML and JSON props. External controlled updates do not echo either callback. Set `instanceKey` to a document ID when one component switches between independent drafts, so undo history cannot cross documents. `createTypseoPreset({ starterKit, textAlign, extensions })` assembles StarterKit and optional extensions and rejects duplicate extension names. `textAlign` defaults to `false` for beta document compatibility; when enabled it applies to paragraphs and headings. The instance is initially null until client initialization; `immediatelyRender` and transaction-driven React rerenders are disabled in the hook implementation.
+Use either `value` or `defaultValue` for HTML consumers, or `document` or `defaultDocument` for canonical Tiptap JSON. Do not mix controlled HTML and JSON props. External controlled updates do not echo either callback. Set `instanceKey` to a document ID when one component switches between independent drafts, so undo history cannot cross documents. `createTypseoPreset({ starterKit, textAlign, taskLists, extensions })` assembles StarterKit and optional extensions and rejects duplicate extension names. `textAlign` and `taskLists` default to `false` for beta document compatibility. Alignment applies to paragraphs and headings; task lists store each item's checked state in JSON. The instance is initially null until client initialization; `immediatelyRender` and transaction-driven React rerenders are disabled in the hook implementation.
 
 Source: [`packages/react/src/use-typseo-editor.ts`](https://github.com/typseo/typseo/blob/main/packages/react/src/use-typseo-editor.ts).

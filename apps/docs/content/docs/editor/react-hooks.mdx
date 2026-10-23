@@ -7,6 +7,8 @@ description: Control the Tiptap instance with useTypseoEditor.
 
 Set `textAlign: true` to add paragraph and heading alignment. It is opt-in so documents created with the earlier beta schema continue to load unchanged.
 
+Set `taskLists: true` to add checkable, nestable task lists. The checked state is part of canonical Tiptap JSON and survives a save/reload cycle. Host applications decide how and when to persist the document.
+
 ```tsx
 'use client';
 

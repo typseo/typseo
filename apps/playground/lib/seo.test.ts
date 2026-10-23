@@ -57,6 +57,43 @@ describe('playground SEO adapter', () => {
     expect(snapshot.bodyText).toBe('Aligned page\nReadable content');
   });
 
+  it('extracts task items as separate blocks without exposing checked state', () => {
+    const snapshot = toSeoDocument(
+      { title: 'Checklist', metaDescription: '', focusKeyword: '' },
+      {
+        type: 'doc',
+        content: [
+          {
+            type: 'taskList',
+            content: [
+              {
+                type: 'taskItem',
+                attrs: { checked: true },
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [{ type: 'text', text: 'Research' }],
+                  },
+                ],
+              },
+              {
+                type: 'taskItem',
+                attrs: { checked: false },
+                content: [
+                  {
+                    type: 'paragraph',
+                    content: [{ type: 'text', text: 'Publish' }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    );
+    expect(snapshot.bodyText).toBe('Checklist\nResearch\nPublish');
+  });
+
   it('separates block text without splitting inline marks or hard breaks', () => {
     expect(
       textFromNode({

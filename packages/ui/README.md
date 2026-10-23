@@ -6,4 +6,6 @@ Optional, unstyled React editor and SEO components. See the [component guide](ht
 
 When the editor enables `textAlign: true`, the toolbar also offers Left, Center, Right, and Justify alignment.
 
+When the editor enables `taskLists: true`, the toolbar adds a task-list button. The host app styles the checkbox and persists the editor document.
+
 This package is available as a public beta on npm. Pin an exact beta version when installing; see [Installation](https://typseo-docs.vercel.app/docs/introduction/installation).

@@ -14,6 +14,7 @@ export function EditorLivePreview() {
       <TypseoEditor
         defaultValue="<p>Start writing with Typseo.</p>"
         textAlign
+        taskLists
         onChange={setHtml}
         ariaLabel="Try the Typseo editor"
         className="demo-editor"

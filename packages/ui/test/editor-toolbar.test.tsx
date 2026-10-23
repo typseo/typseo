@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { useTypseoEditor } from '@typseo/react';
+import { EditorContent } from '@tiptap/react';
 import {
   act,
   cleanup,
@@ -25,6 +26,7 @@ describe('EditorToolbar typography', () => {
     expect(
       screen.queryByRole('combobox', { name: 'Text alignment' }),
     ).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Task list' })).toBeNull();
 
     const style = screen.getByRole('combobox', { name: 'Text style' });
     expect(style.querySelectorAll('option')).toHaveLength(7);
@@ -108,6 +110,33 @@ describe('EditorToolbar typography', () => {
 
     fireEvent.change(alignment, { target: { value: 'left' } });
     expect(result.current?.getJSON().content?.[0]?.attrs?.textAlign).toBeNull();
+    unmount();
+  });
+
+  it('toggles task lists only when enabled and keeps the change undoable', async () => {
+    const { result, unmount } = renderHook(() =>
+      useTypseoEditor({ defaultValue: '<p>Ship it</p>', taskLists: true }),
+    );
+    await waitFor(() => expect(result.current).not.toBeNull());
+    render(<EditorToolbar editor={result.current} />);
+    render(<EditorContent editor={result.current} />);
+
+    const button = screen.getByRole('button', { name: 'Task list' });
+    fireEvent.click(button);
+    expect(result.current?.getJSON().content?.[0]).toMatchObject({
+      type: 'taskList',
+      content: [{ type: 'taskItem', attrs: { checked: false } }],
+    });
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    act(() => result.current?.commands.undo());
+    expect(result.current?.getJSON().content?.[0]?.type).toBe('paragraph');
+    act(() => result.current?.commands.redo());
+    expect(result.current?.getJSON().content?.[0]?.type).toBe('taskList');
+    fireEvent.click(screen.getByRole('checkbox'));
+    const checked = result.current?.getJSON();
+    expect(checked?.content?.[0]?.content?.[0]?.attrs?.checked).toBe(true);
+    act(() => result.current?.commands.setContent(checked ?? ''));
+    expect(result.current?.getJSON()).toEqual(checked);
     unmount();
   });
 });

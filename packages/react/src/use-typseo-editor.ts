@@ -26,6 +26,8 @@ export interface UseTypseoEditorOptions {
   starterKit?: boolean;
   /** Opt in to paragraph and heading alignment. Existing documents are unchanged by default. */
   textAlign?: boolean;
+  /** Opt in to checkable, nestable task lists. */
+  taskLists?: boolean;
   editable?: boolean;
   editorProps?: EditorOptions['editorProps'];
   /** Recreate the editor (and undo history) when switching independent documents. */
@@ -46,6 +48,7 @@ export function useTypseoEditor({
   extensions,
   starterKit = true,
   textAlign = false,
+  taskLists = false,
   editable = true,
   editorProps,
   instanceKey,
@@ -76,9 +79,10 @@ export function useTypseoEditor({
       createTypseoPreset({
         starterKit,
         textAlign,
+        taskLists,
         extensions: extensionsRef.current,
       }),
-    [extensionsRef.current, starterKit, textAlign],
+    [extensionsRef.current, starterKit, textAlign, taskLists],
   );
 
   const editor = useEditor(
