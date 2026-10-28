@@ -12,7 +12,7 @@
   "dependencies": {
     "@typseo/core": "workspace:^",
     "@typseo/ui": "workspace:^",
-    "fumadocs-core": "16.17.7",
+    "fumadocs-core": "16.17.8",
     "fumadocs-mdx": "15.4.9",
     "fumadocs-ui": "16.17.7",
     "next": "16.4.2",
